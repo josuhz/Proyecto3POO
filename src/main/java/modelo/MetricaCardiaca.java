@@ -13,7 +13,6 @@ public class MetricaCardiaca extends Metrica {
         this.variabilidadCardiaca = variabilidadCardiaca;
     }
 
-    // POLIMORFISMO
     @Override
     public double calcularIndicador() {
         if (frecuenciaCardiaca >= 60 && frecuenciaCardiaca <= 100) {

@@ -20,11 +20,13 @@ public class Pulsera extends DispositivoWearable {
         List<Metrica> metricas = new ArrayList<>();
         Random r = new Random();
 
+        // Principalmente actividad
         int pasos = 2000 + r.nextInt(8000);
         double dist = pasos * 0.0008;
         double cal = pasos * 0.04;
         metricas.add(new MetricaActividad(getIdDispositivo(), usuarioId, pasos, dist, cal));
 
+        // FC básica
         int fc = 65 + r.nextInt(35);
         metricas.add(new MetricaCardiaca(getIdDispositivo(), usuarioId, fc, 40));
 

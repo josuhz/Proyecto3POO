@@ -17,11 +17,9 @@ public abstract class DispositivoWearable {
         this.activo = true;
     }
 
-    // POLIMORFISMO: cada hijo implementa diferente
     public abstract List<Metrica> sincronizarDatos(String usuarioId);
     public abstract String getTipoDispositivo();
 
-    // ENCAPSULAMIENTO
     public String getIdDispositivo() { return idDispositivo; }
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }

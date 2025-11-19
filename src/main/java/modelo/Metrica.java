@@ -21,11 +21,9 @@ public abstract class Metrica {
         this.usuarioId = usuarioId;
     }
 
-    // POLIMORFISMO: cada métrica calcula diferente
     public abstract double calcularIndicador();
     public abstract String getTipo();
 
-    // ENCAPSULAMIENTO
     public String getIdMetrica() { return idMetrica; }
     public LocalDateTime getTimestamp() { return timestamp; }
     public String getDispositivoOrigen() { return dispositivoOrigen; }

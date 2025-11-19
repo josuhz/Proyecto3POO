@@ -1,7 +1,7 @@
 package modelo;
 
 public class MetricaOxigeno extends Metrica {
-    private double saturacionOxigeno; // SpO2 en porcentaje
+    private double saturacionOxigeno;
 
     public MetricaOxigeno(String dispositivoOrigen, String usuarioId, double saturacionOxigeno) {
         super(dispositivoOrigen, usuarioId);
@@ -10,7 +10,6 @@ public class MetricaOxigeno extends Metrica {
 
     @Override
     public double calcularIndicador() {
-        // Normal: >95%, crítico: <90%
         if (saturacionOxigeno >= 95) {
             return 100.0;
         } else if (saturacionOxigeno >= 90) {
