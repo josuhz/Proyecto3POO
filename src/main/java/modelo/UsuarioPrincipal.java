@@ -12,7 +12,6 @@ public class UsuarioPrincipal {
     private double peso;
     private double altura;
 
-    // COMPOSICIÓN: UsuarioPrincipal TIENE estos gestores
     private GestorDispositivos gestorDispositivos;
     private GestorInvitados gestorInvitados;
     private List<Metrica> historicoMetricas;
@@ -23,7 +22,6 @@ public class UsuarioPrincipal {
         this.email = email;
         this.password = password;
 
-        // COMPOSICIÓN: Crear instancias
         this.gestorDispositivos = new GestorDispositivos();
         this.gestorInvitados = new GestorInvitados();
         this.historicoMetricas = new ArrayList<>();
@@ -39,7 +37,6 @@ public class UsuarioPrincipal {
         return new ArrayList<>(historicoMetricas.subList(inicio, historicoMetricas.size()));
     }
 
-    // ENCAPSULAMIENTO: Getters y Setters
     public String getIdUsuario() { return idUsuario; }
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
@@ -54,7 +51,6 @@ public class UsuarioPrincipal {
     public double getAltura() { return altura; }
     public void setAltura(double altura) { this.altura = altura; }
 
-    // COMPOSICIÓN: Acceso a gestores
     public GestorDispositivos getGestorDispositivos() { return gestorDispositivos; }
     public GestorInvitados getGestorInvitados() { return gestorInvitados; }
     public List<Metrica> getHistoricoMetricas() { return new ArrayList<>(historicoMetricas); }

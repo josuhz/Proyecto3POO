@@ -1,23 +1,21 @@
 package GUI;
 
-import java.io.File;
-import java.io.IOException;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.chart.BarChart;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 
-public class controladorDashboard {
+import java.io.File;
+import java.io.IOException;
 
+public class controladorRangos {
+
+    // Navegación
     @FXML
     private MenuButton menuNavegacion;
 
@@ -36,42 +34,37 @@ public class controladorDashboard {
     @FXML
     private MenuItem menuCerrarSesion;
 
+    // TextAreas
     @FXML
-    private Label lblUsuario;
+    private TextArea areaFrecuenciaCardiaca;
 
     @FXML
-    private Label lblNivelCardiaco;
+    private TextArea areaGlucosa;
 
     @FXML
-    private Label lblActividad;
+    private TextArea areaCalidadSueno;
 
+    // Botón
     @FXML
-    private Label lblHorasSueno;
-
-    @FXML
-    private BarChart<String, Number> bcharFrecCardiaca;
-
-    @FXML
-    private TextArea txtAlertas;
-
-    @FXML
-    private TextArea txtObservaciones;
+    private Button btnGuardarConfiguracion;
 
     @FXML
     public void initialize() {
+        // Configurar eventos del menú de navegación
         menuDashboard.setOnAction(event -> irAVentana("Dashboard.fxml", "Dashboard"));
         menuDispositivos.setOnAction(event -> irAVentana("menuDispositivos.fxml", "Mis Dispositivos"));
         menuGestionInvitados.setOnAction(event -> irAVentana("menuGestionInvitados.fxml", "Gestión de Invitados"));
         menuRangos.setOnAction(event -> irAVentana("menuRangos.fxml", "Rangos"));
         menuCerrarSesion.setOnAction(event -> cerrarSesion());
 
+        // Configurar evento del botón guardar
+        btnGuardarConfiguracion.setOnAction(event -> guardarConfiguracion());
     }
 
     private void irAVentana(String nombreArchivo, String titulo) {
         try {
             String userDir = System.getProperty("user.dir");
             File fxmlFile = new File(userDir, "src/main/java/GUI/" + nombreArchivo);
-
             FXMLLoader loader = new FXMLLoader(fxmlFile.toURI().toURL());
             Parent root = loader.load();
 
@@ -107,31 +100,7 @@ public class controladorDashboard {
         }
     }
 
-    public Label getLblUsuario() {
-        return lblUsuario;
-    }
-
-    public Label getLblNivelCardiaco() {
-        return lblNivelCardiaco;
-    }
-
-    public Label getLblActividad() {
-        return lblActividad;
-    }
-
-    public Label getLblHorasSueno() {
-        return lblHorasSueno;
-    }
-
-    public BarChart<String, Number> getBcharFrecCardiaca() {
-        return bcharFrecCardiaca;
-    }
-
-    public TextArea getTxtAlertas() {
-        return txtAlertas;
-    }
-
-    public TextArea getTxtObservaciones() {
-        return txtObservaciones;
+    private void guardarConfiguracion() {
+        System.out.println("Guardar configuración");
     }
 }
