@@ -1,19 +1,25 @@
 package GUI;
 
-import java.io.File;
-import java.io.IOException;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 
-public class controladorDashboard {
+import java.io.File;
+import java.io.IOException;
+
+public class controladorDispositivos {
+
+    @FXML
+    private TextArea areaDispositivos;
+
+    @FXML
+    private Button btnAgregar;
 
     @FXML
     private MenuButton menuNavegacion;
@@ -40,6 +46,8 @@ public class controladorDashboard {
         menuGestionInvitados.setOnAction(event -> irAVentana("menuGestionInvitados.fxml", "Gestión de Invitados"));
         menuRangos.setOnAction(event -> irAVentana("menuRangos.fxml", "Rangos"));
         menuCerrarSesion.setOnAction(event -> cerrarSesion());
+
+        btnAgregar.setOnAction(event -> agregarDispositivo());
     }
 
     private void irAVentana(String nombreArchivo, String titulo) {
@@ -80,7 +88,18 @@ public class controladorDashboard {
             e.printStackTrace();
             System.out.println("Error al cerrar sesión: " + e.getMessage());
         }
+    }
 
+    private void agregarDispositivo() {
+        String dispositivoActual = areaDispositivos.getText();
+        String nuevoDispositivo = "\n--- Nuevo Dispositivo ---\n" +
+                "Nombre: [Nombre del dispositivo]\n" +
+                "ID: [ID]\n" +
+                "Batería: [%]\n" +
+                "Última sincronización: [Fecha]\n" +
+                "Métricas: [Métricas]\n" +
+                "------------------------\n";
 
+        areaDispositivos.setText(dispositivoActual + nuevoDispositivo);
     }
 }
