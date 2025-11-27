@@ -8,9 +8,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 
 public class controladorDashboard {
@@ -34,12 +37,34 @@ public class controladorDashboard {
     private MenuItem menuCerrarSesion;
 
     @FXML
+    private Label lblUsuario;
+
+    @FXML
+    private Label lblNivelCardiaco;
+
+    @FXML
+    private Label lblActividad;
+
+    @FXML
+    private Label lblHorasSueno;
+
+    @FXML
+    private BarChart<String, Number> bcharFrecCardiaca;
+
+    @FXML
+    private TextArea txtAlertas;
+
+    @FXML
+    private TextArea txtObservaciones;
+
+    @FXML
     public void initialize() {
         menuDashboard.setOnAction(event -> irAVentana("Dashboard.fxml", "Dashboard"));
         menuDispositivos.setOnAction(event -> irAVentana("menuDispositivos.fxml", "Mis Dispositivos"));
         menuGestionInvitados.setOnAction(event -> irAVentana("menuGestionInvitados.fxml", "Gestión de Invitados"));
         menuRangos.setOnAction(event -> irAVentana("menuRangos.fxml", "Rangos"));
         menuCerrarSesion.setOnAction(event -> cerrarSesion());
+
     }
 
     private void irAVentana(String nombreArchivo, String titulo) {
@@ -80,7 +105,33 @@ public class controladorDashboard {
             e.printStackTrace();
             System.out.println("Error al cerrar sesión: " + e.getMessage());
         }
+    }
 
+    public Label getLblUsuario() {
+        return lblUsuario;
+    }
 
+    public Label getLblNivelCardiaco() {
+        return lblNivelCardiaco;
+    }
+
+    public Label getLblActividad() {
+        return lblActividad;
+    }
+
+    public Label getLblHorasSueno() {
+        return lblHorasSueno;
+    }
+
+    public BarChart<String, Number> getBcharFrecCardiaca() {
+        return bcharFrecCardiaca;
+    }
+
+    public TextArea getTxtAlertas() {
+        return txtAlertas;
+    }
+
+    public TextArea getTxtObservaciones() {
+        return txtObservaciones;
     }
 }
