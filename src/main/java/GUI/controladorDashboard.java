@@ -1,11 +1,13 @@
 package GUI;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -53,6 +55,8 @@ public class controladorDashboard {
     @FXML
     private BarChart<String, Number> bcharFrecCardiaca;
     @FXML
+    private BarChart<String, Number> bcharOxigenoSangre;
+    @FXML
     private TextArea txtAlertas;
     @FXML
     private TextArea txtObservaciones;
@@ -78,6 +82,7 @@ public class controladorDashboard {
         configurarChoiceBoxFechas();
         cargarDatosIniciales();
         configurarGraficoFrecuenciaCardiaca();
+        configurarGraficoOxigenoSangre();
     }
 
     private void cargarNombreUsuario() {
@@ -191,16 +196,16 @@ public class controladorDashboard {
             // Cambiar color según el estado
             switch (estadoFC) {
                 case "ALERTA_BAJA":
-                    lblEstado.setStyle("-fx-text-fill: #0033ff;"); // Azul para alerta baja
+                    lblEstado.setStyle("-fx-text-fill: #0033ff;");
                     break;
                 case "ALERTA_ALTA":
-                    lblEstado.setStyle("-fx-text-fill: #ff0000;"); // Rojo para alerta alta
+                    lblEstado.setStyle("-fx-text-fill: #ff0000;");
                     break;
                 case "LIMITE":
-                    lblEstado.setStyle("-fx-text-fill: #ff9800;"); // Naranja para límite
+                    lblEstado.setStyle("-fx-text-fill: #ff9800;");
                     break;
                 default:
-                    lblEstado.setStyle("-fx-text-fill: #666666;"); // Gris para normal
+                    lblEstado.setStyle("-fx-text-fill: #666666;");
                     break;
             }
         }
@@ -397,6 +402,73 @@ public class controladorDashboard {
             bcharFrecCardiaca.setLegendVisible(false);
             bcharFrecCardiaca.setTitle("Frecuencia Cardíaca (Últimos 7 días)");
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void configurarGraficoOxigenoSangre() {
+        bcharOxigenoSangre.getData().clear();
+
+        File oxigenoFile = new File("oxigeno.txt");
+
+        if (!oxigenoFile.exists()) {
+            return;
+        }
+
+        try {
+            Map<LocalDate, Double> oxigenoPorFecha = new TreeMap<>();
+            BufferedReader br = new BufferedReader(new FileReader(oxigenoFile));
+            String linea;
+            int lineasLeidas = 0;
+
+            while ((linea = br.readLine()) != null) {
+                lineasLeidas++;
+                String[] partes = linea.split(",");
+
+                if (partes.length >= 2) {
+                    try {
+                        LocalDate fecha = LocalDate.parse(partes[0].trim());
+                        double spo2 = Double.parseDouble(partes[1].trim());
+                        oxigenoPorFecha.put(fecha, spo2);
+                    } catch (Exception e) {
+                        System.out.println("  -> Error: " + e.getMessage());
+                    }
+                }
+            }
+            br.close();
+
+
+            // Obtener últimas 7 fechas
+            List<LocalDate> fechasOrdenadas = new ArrayList<>(oxigenoPorFecha.keySet());
+            Collections.sort(fechasOrdenadas);
+
+            int inicio = Math.max(0, fechasOrdenadas.size() - 7);
+            List<LocalDate> ultimas7 = fechasOrdenadas.subList(inicio, fechasOrdenadas.size());
+
+
+            // Crear serie
+            XYChart.Series<String, Number> series = new XYChart.Series<>();
+            series.setName("SpO2");
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM");
+            for (LocalDate fecha : ultimas7) {
+                String fechaStr = fecha.format(formatter);
+                double oxigeno = oxigenoPorFecha.get(fecha);
+                series.getData().add(new XYChart.Data<>(fechaStr, oxigeno));
+
+            }
+
+
+            if (!series.getData().isEmpty()) {
+                bcharOxigenoSangre.getData().add(series);
+                bcharOxigenoSangre.setLegendVisible(false);
+                bcharOxigenoSangre.setTitle("Oxígeno en Sangre (Últimos 7 días)");
+            } else {
+                System.out.println("✗ No hay datos para el gráfico");
+            }
+
+        } catch (Exception e) {
+            System.out.println("✗ Error: " + e.getMessage());
             e.printStackTrace();
         }
     }

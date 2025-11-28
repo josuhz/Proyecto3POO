@@ -1,14 +1,12 @@
 package GUI;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class LectorDatosSimulador {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -68,6 +66,56 @@ public class LectorDatosSimulador {
         }
 
         return datos;
+    }
+
+    public static List<Map<String, String>> obtenerUltimos7DiasOxigeno() {
+        List<Map<String, String>> resultado = new ArrayList<>();
+        Map<LocalDate, Double> oxigenoPorFecha = new TreeMap<>();
+
+        File archivo = new File("oxigeno.txt");
+        if (!archivo.exists()) {
+            return resultado;
+        }
+
+        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                String[] partes = linea.split(",");
+                if (partes.length >= 2) {
+                    try {
+                        LocalDate fecha = LocalDate.parse(partes[0].trim()); // Fecha está en columna 0
+                        double spo2 = Double.parseDouble(partes[1].trim());  // SpO2 está en columna 1
+
+                        // Guardar el valor de cada día
+                        oxigenoPorFecha.put(fecha, spo2);
+                    } catch (Exception e) {
+                        // Ignorar líneas mal formateadas
+                        System.out.println("Error al parsear línea: " + linea);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return resultado;
+        }
+
+        // Obtener las últimas 7 fechas
+        List<LocalDate> fechasOrdenadas = new ArrayList<>(oxigenoPorFecha.keySet());
+        Collections.sort(fechasOrdenadas);
+
+        int inicio = Math.max(0, fechasOrdenadas.size() - 7);
+        List<LocalDate> ultimas7Fechas = fechasOrdenadas.subList(inicio, fechasOrdenadas.size());
+
+        // Crear lista de resultados
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM");
+        for (LocalDate fecha : ultimas7Fechas) {
+            Map<String, String> dato = new HashMap<>();
+            dato.put("fecha", fecha.format(formatter));
+            dato.put("oxigeno", String.format("%.1f", oxigenoPorFecha.get(fecha)));
+            resultado.add(dato);
+        }
+
+        return resultado;
     }
 
     private static Map<String, String> leerFrecuenciaCardiaca(String fecha) throws IOException {

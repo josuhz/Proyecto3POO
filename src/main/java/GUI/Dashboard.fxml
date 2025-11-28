@@ -74,11 +74,6 @@
          <Font size="18.0" />
       </font>
    </Label>
-   <Label layoutX="27.0" layoutY="527.0" prefHeight="27.0" prefWidth="259.0" text="📈 Frecuencia Cardiaca Semanal">
-      <font>
-         <Font size="18.0" />
-      </font>
-   </Label>
    <BarChart fx:id="bcharFrecCardiaca" layoutX="311.0" layoutY="527.0" prefHeight="192.0" prefWidth="289.0">
      <xAxis>
        <CategoryAxis side="BOTTOM" />
@@ -95,5 +90,13 @@
          <Font name="System Bold" size="18.0" />
       </font>
    </Label>
+   <BarChart fx:id="bcharOxigenoSangre" layoutX="20.0" layoutY="527.0" prefHeight="192.0" prefWidth="289.0">
+      <xAxis>
+         <CategoryAxis side="BOTTOM" />
+      </xAxis>
+      <yAxis>
+         <NumberAxis side="LEFT" />
+      </yAxis>
+   </BarChart>
 
 </AnchorPane>

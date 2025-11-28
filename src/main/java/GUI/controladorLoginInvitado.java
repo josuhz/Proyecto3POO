@@ -44,8 +44,8 @@ public class controladorLoginInvitado {
             // Guardar información del invitado
             guardarInvitado();
 
-            // Ir al Dashboard (por ahora, mismo que usuario principal)
-            irADashboard();
+            // Ir al menú de usuario invitado
+            irAMenuUsuarioInvitado();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -57,35 +57,45 @@ public class controladorLoginInvitado {
         File archivo = new File("usuarios_invitados.txt");
 
         try (PrintWriter writer = new PrintWriter(new FileWriter(archivo, true))) {
-            // Formato: nombre,correo,tipo,fecha
+            // Formato: nombre,correo,tipo,fecha,permisos (permisos por defecto: 111 - todos activos)
             writer.println(
                     txtNombreInvitado.getText() + "," +
                             txtCorreoInvitado.getText() + "," +
                             "INVITADO" + "," +
-                            LocalDate.now()
+                            LocalDate.now() + "," +
+                            "111"  // Permisos por defecto: todos activos
             );
         }
 
         System.out.println("Invitado registrado exitosamente");
     }
 
-    private void irADashboard() {
+    private void irAMenuUsuarioInvitado() {
         try {
             String userDir = System.getProperty("user.dir");
-            File fxmlFile = new File(userDir, "src/main/java/GUI/Dashboard.fxml");
+            File fxmlFile = new File(userDir, "src/main/java/GUI/menuUsuarioInvitado.fxml");
+
+            if (!fxmlFile.exists()) {
+                System.out.println("Error: No se encontró menuUsuarioInvitado.fxml");
+                return;
+            }
 
             FXMLLoader loader = new FXMLLoader(fxmlFile.toURI().toURL());
             Parent root = loader.load();
 
+            // Obtener el controlador del menú de usuario invitado y establecer el email
+            controladorUsuarioInvitado controlador = loader.getController();
+            controlador.setEmailInvitado(txtCorreoInvitado.getText());
+
             Stage stage = (Stage) btnAccederInvitado.getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.setTitle("Dashboard - Modo Invitado");
+            stage.setTitle("Panel de Invitado");
             stage.show();
 
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Error al cargar dashboard: " + e.getMessage());
+            System.out.println("Error al cargar menú de invitado: " + e.getMessage());
         }
     }
 
