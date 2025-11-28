@@ -31,7 +31,7 @@ public class MetricaSueno extends Metrica{
         return "Sueño";
     }
 
-    public double getHorasDormidas() { return horasDormidas; }
+    public double getHorasSueno() { return horasDormidas; }
     public int getCalidadSueno() { return calidadSueno; }
     public int getFasesREM() { return fasesREM; }
 }
