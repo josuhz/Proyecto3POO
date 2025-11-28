@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -14,7 +13,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="667.0" prefWidth="564.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.controladorRangos">
+<AnchorPane prefHeight="504.0" prefWidth="560.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.controladorRangos">
     <children>
         <!-- MenuButton para navegación -->
         <MenuButton fx:id="menuNavegacion" layoutX="36.0" layoutY="24.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="50.0" style="-fx-text-fill: white;" text="≡">
@@ -40,7 +39,7 @@
         <!-- ScrollPane con contenido -->
         <ScrollPane fitToWidth="true" layoutX="14.0" layoutY="80.0" prefHeight="497.0" prefWidth="536.0" style="-fx-background-color: white; -fx-border-color: #cccccc;">
             <content>
-                <VBox prefHeight="530.0" prefWidth="532.0" spacing="20.0">
+                <VBox prefHeight="222.0" prefWidth="519.0" spacing="20.0">
                     <padding>
                         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                     </padding>
@@ -62,12 +61,21 @@
                                         </Text>
                                     </children>
                                 </HBox>
-      
-                                <TextArea fx:id="areaFrecuenciaCardiaca" editable="false" prefHeight="120.0" promptText="Configuración de frecuencia cardíaca" wrapText="true">
-                                    <font>
-                                        <Font size="12.0" />
-                                    </font>
-                                </TextArea>
+                        <Label text="RangoNormal:       [60]-[100]                   BPM">
+                           <font>
+                              <Font name="System Bold Italic" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label text="Alerta baja                [&lt; 55]                      BPM" textFill="#0033ff">
+                           <font>
+                              <Font name="System Bold Italic" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label text="Alerta Alta                [&gt;105]                      BPM" textFill="RED">
+                           <font>
+                              <Font name="System Bold Italic" size="12.0" />
+                           </font>
+                        </Label>
                             </children>
                         </VBox>
       
@@ -88,12 +96,31 @@
                                         </Text>
                                     </children>
                                 </HBox>
-      
-                                <TextArea fx:id="areaCalidadSueno" prefHeight="120.0" promptText="Configuración de calidad de sueño" wrapText="true">
-                                    <font>
-                                        <Font size="12.0" />
-                                    </font>
-                                </TextArea>
+                        <Label text="Sedentario                            &lt; 5,000 pasos                             CríticoRojo" textFill="#dd0000">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label text="Poco Activo                             5,000 - 7,499 pasos                 Precaución" textFill="#f56f00">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label text="Moderadamente Activo          7,500 - 9,999 pasos                Aceptable" textFill="#cdc900">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label text="Activo                                       10,000 - 12,499 pasos            Saludable" textFill="#55cc00">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <Label text="Muy Activo                           ≥ 12,500 pasos                          Excelente" textFill="#0b9401">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
                             </children>
                         </VBox>
                   <VBox layoutX="30.0" layoutY="232.0" spacing="10.0" style="-fx-border-color: #cccccc; -fx-border-width: 1; -fx-border-radius: 5; -fx-padding: 15;">
@@ -112,23 +139,21 @@
                               </Text>
                            </children>
                         </HBox>
-                        <TextArea fx:id="areaCalidadSueno1" prefHeight="120.0" promptText="Configuración de calidad de sueño" wrapText="true">
+                        <Label text="Meta diaria                           [7,5] Horas">
                            <font>
-                              <Font size="12.0" />
+                              <Font name="System Bold Italic" size="12.0" />
                            </font>
-                        </TextArea>
+                        </Label>
+                        <Label text="Alerta si                                [&lt; 6] Horas" textFill="RED">
+                           <font>
+                              <Font name="System Bold Italic" size="12.0" />
+                           </font>
+                        </Label>
                      </children>
                   </VBox>
                     </children>
                 </VBox>
             </content>
         </ScrollPane>
-
-                                                                                            <!-- Botón Guardar Configuración -->
-        <Button fx:id="btnGuardarConfiguracion" layoutX="192.0" layoutY="599.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="180.0" style="-fx-background-color: #B3D9FF; -fx-text-fill: white; -fx-background-radius: 5; -fx-cursor: hand;" text="Guardar Configuración">
-            <font>
-                <Font size="14.0" />
-            </font>
-        </Button>
     </children>
 </AnchorPane>

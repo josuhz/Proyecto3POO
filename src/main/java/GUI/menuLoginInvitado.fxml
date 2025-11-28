@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="300.0" prefWidth="400.0" style="-fx-background-color: white; -fx-border-color: #cccccc; -fx-border-width: 2;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.controladorLoginInvitado">
+    <children>
+        <!-- Título -->
+        <Text layoutX="120.0" layoutY="40.0" style="-fx-font-weight: bold;" text="Acceso Invitado">
+            <font>
+                <Font size="20.0" />
+            </font>
+        </Text>
+
+        <!-- Campos -->
+        <Label layoutX="50.0" layoutY="80.0" text="Nombre del Invitado:" />
+        <TextField fx:id="txtNombreInvitado" layoutX="50.0" layoutY="100.0" prefHeight="30.0" prefWidth="300.0" promptText="Ingrese su nombre" />
+
+        <Label layoutX="50.0" layoutY="140.0" text="Correo Electrónico:" />
+        <TextField fx:id="txtCorreoInvitado" layoutX="50.0" layoutY="160.0" prefHeight="30.0" prefWidth="300.0" promptText="Ingrese su correo" />
+
+        <!-- Botones -->
+        <Button fx:id="btnAccederInvitado" layoutX="150.0" layoutY="220.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="100.0" style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-background-radius: 5;" text="Acceder" />
+
+        <Button fx:id="btnVolver" layoutX="260.0" layoutY="220.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="80.0" style="-fx-background-color: #757575; -fx-text-fill: white; -fx-background-radius: 5;" text="Volver" />
+    </children>
+</AnchorPane>

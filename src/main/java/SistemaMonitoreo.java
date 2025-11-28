@@ -10,25 +10,43 @@ public class SistemaMonitoreo extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            // Cargar el archivo FXML desde la misma carpeta
-            String userDir = System.getProperty("user.dir");
-            File fxmlFile = new File(userDir, "src/main/java/GUI/menuLogin.fxml");
-            FXMLLoader loader = new FXMLLoader(fxmlFile.toURI().toURL());
-            Parent root = loader.load();
 
-            // Crear la escena
-            Scene scene = new Scene(root);
+            File archivoUsuario = new File("usuario_principal.txt");
 
-            // Configurar el Stage principal
-            primaryStage.setTitle("Inicio de Sesión");
-            primaryStage.setScene(scene);
-            primaryStage.setResizable(false);
-            primaryStage.show();
+            if (archivoUsuario.exists()) {
+                cargarLogin(primaryStage);
+            } else {
+                cargarSignUp(primaryStage);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Error al cargar menuLogin.fxml: " + e.getMessage());
+            System.out.println("Error: " + e.getMessage());
         }
+    }
+
+    private void cargarSignUp(Stage primaryStage) throws Exception {
+        String userDir = System.getProperty("user.dir");
+        File fxmlFile = new File(userDir, "src/main/java/GUI/menuSignUp.fxml");
+        FXMLLoader loader = new FXMLLoader(fxmlFile.toURI().toURL());
+        Parent root = loader.load();
+
+        primaryStage.setTitle("Registro - HealthTrack");
+        primaryStage.setScene(new Scene(root));
+        primaryStage.setResizable(false);
+        primaryStage.show();
+    }
+
+    private void cargarLogin(Stage primaryStage) throws Exception {
+        String userDir = System.getProperty("user.dir");
+        File fxmlFile = new File(userDir, "src/main/java/GUI/menuLogin.fxml");
+        FXMLLoader loader = new FXMLLoader(fxmlFile.toURI().toURL());
+        Parent root = loader.load();
+
+        primaryStage.setTitle("Inicio de Sesión - HealthTrack");
+        primaryStage.setScene(new Scene(root));
+        primaryStage.setResizable(false);
+        primaryStage.show();
     }
 
     public static void main(String[] args) {

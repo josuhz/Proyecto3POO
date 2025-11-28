@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class OximetroPulso extends DispositivoWearable{
+public class OximetroPulso extends DispositivoWearable {
     public OximetroPulso(String idDispositivo, String nombre, String marca) {
         super(idDispositivo, nombre, marca);
     }
@@ -20,7 +20,7 @@ public class OximetroPulso extends DispositivoWearable{
         Random r = new Random();
 
         // Saturación de oxígeno (normal: 95-100%)
-        double spo2 = 95 + r.nextDouble() * 5;
+        double spo2 = 92 + r.nextDouble() * 6; // 92-98% (ocasionalmente baja para variedad)
         metricas.add(new MetricaOxigeno(getIdDispositivo(), usuarioId, spo2));
 
         // También mide FC

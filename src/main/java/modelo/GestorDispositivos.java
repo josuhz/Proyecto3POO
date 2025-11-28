@@ -4,10 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GestorDispositivos {
+    private static GestorDispositivos instancia;
     private List<DispositivoWearable> dispositivos;
 
-    public GestorDispositivos() {
+    // Constructor privado para evitar múltiples instancias
+    private GestorDispositivos() {
         this.dispositivos = new ArrayList<>();
+    }
+
+    // Método para obtener la única instancia
+    public static GestorDispositivos getInstancia() {
+        if (instancia == null) {
+            instancia = new GestorDispositivos();
+        }
+        return instancia;
     }
 
     public boolean agregarDispositivo(DispositivoWearable dispositivo) {
@@ -56,5 +66,10 @@ public class GestorDispositivos {
             }
         }
         return null;
+    }
+
+    // Método para limpiar todos los datos (útil para logout)
+    public void limpiarTodo() {
+        dispositivos.clear();
     }
 }

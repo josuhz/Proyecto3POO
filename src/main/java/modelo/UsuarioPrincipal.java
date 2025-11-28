@@ -12,7 +12,6 @@ public class UsuarioPrincipal {
     private double peso;
     private double altura;
 
-    private GestorDispositivos gestorDispositivos;
     private GestorInvitados gestorInvitados;
     private List<Metrica> historicoMetricas;
 
@@ -22,13 +21,12 @@ public class UsuarioPrincipal {
         this.email = email;
         this.password = password;
 
-        this.gestorDispositivos = new GestorDispositivos();
         this.gestorInvitados = new GestorInvitados();
         this.historicoMetricas = new ArrayList<>();
     }
 
     public void sincronizarDispositivos() {
-        List<Metrica> nuevasMetricas = gestorDispositivos.sincronizarTodos(this.idUsuario);
+        List<Metrica> nuevasMetricas = GestorDispositivos.getInstancia().sincronizarTodos(this.idUsuario);
         historicoMetricas.addAll(nuevasMetricas);
     }
 
@@ -51,7 +49,11 @@ public class UsuarioPrincipal {
     public double getAltura() { return altura; }
     public void setAltura(double altura) { this.altura = altura; }
 
-    public GestorDispositivos getGestorDispositivos() { return gestorDispositivos; }
+    // Modificar para usar el Singleton
+    public GestorDispositivos getGestorDispositivos() {
+        return GestorDispositivos.getInstancia();
+    }
+
     public GestorInvitados getGestorInvitados() { return gestorInvitados; }
     public List<Metrica> getHistoricoMetricas() { return new ArrayList<>(historicoMetricas); }
 

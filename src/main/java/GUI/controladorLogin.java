@@ -33,7 +33,7 @@ public class controladorLogin {
         btnIniciarSesion.setOnAction(event -> irADashboard(event));
 
         if (enlaceInvitado != null) {
-            enlaceInvitado.setOnAction(event -> irAMenuInvitado(event));
+            enlaceInvitado.setOnAction(event -> irALoginInvitado(event));
         }
     }
 
@@ -47,7 +47,14 @@ public class controladorLogin {
                 System.out.println("Por favor, completa todos los campos");
                 return;
             }
-            // Cargar desde la misma carpeta GUI
+
+            // Verificar credenciales usando el manejador
+            if (!ManejadorUsuarios.verificarCredenciales(correo, contrasena)) {
+                System.out.println("Credenciales incorrectas");
+                return;
+            }
+
+            // Cargar Dashboard
             String userDir = System.getProperty("user.dir");
             File fxmlFile = new File(userDir, "src/main/java/GUI/Dashboard.fxml");
 
@@ -67,11 +74,10 @@ public class controladorLogin {
     }
 
     @FXML
-    private void irAMenuInvitado(ActionEvent event) {
+    private void irALoginInvitado(ActionEvent event) {
         try {
-            // Cargar desde la misma carpeta GUI
             String userDir = System.getProperty("user.dir");
-            File fxmlFile = new File(userDir, "src/main/java/GUI/menuDispositivos.fxml");
+            File fxmlFile = new File(userDir, "src/main/java/GUI/menuLoginInvitado.fxml");
 
             FXMLLoader loader = new FXMLLoader(fxmlFile.toURI().toURL());
             Parent root = loader.load();
@@ -79,12 +85,12 @@ public class controladorLogin {
             Stage stage = (Stage) ((Hyperlink) event.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
-            stage.setTitle("Menú Invitado");
+            stage.setTitle("Acceso Invitado");
             stage.show();
 
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Error al cargar menuInvitado.fxml: " + e.getMessage());
+            System.out.println("Error al cargar menuLoginInvitado.fxml: " + e.getMessage());
         }
     }
 }
