@@ -1,6 +1,8 @@
 package modelo;
 
-public class MetricaActividad extends Metrica {
+import java.io.Serializable;
+
+public class MetricaActividad extends Metrica implements Serializable {
     private int pasos;
     private double distancia;
     private double caloriasQuemadas;

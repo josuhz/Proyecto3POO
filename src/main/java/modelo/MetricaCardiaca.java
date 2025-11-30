@@ -1,8 +1,9 @@
 package modelo;
 
-import java.time.LocalDateTime;
+import java.io.Serializable;
 
-public class MetricaCardiaca extends Metrica {
+
+public class MetricaCardiaca extends Metrica implements Serializable {
     private int frecuenciaCardiaca;
     private double variabilidadCardiaca;
 
@@ -29,7 +30,6 @@ public class MetricaCardiaca extends Metrica {
         return "Frecuencia Cardíaca";
     }
 
-    // ENCAPSULAMIENTO
     public int getFrecuenciaCardiaca() { return frecuenciaCardiaca; }
     public double getVariabilidadCardiaca() { return variabilidadCardiaca; }
 }

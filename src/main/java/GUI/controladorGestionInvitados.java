@@ -30,6 +30,9 @@ public class controladorGestionInvitados {
     private CheckBox chkActividad;
 
     @FXML
+    private CheckBox chkOxigeno;
+
+    @FXML
     private Button btnModificarPermisos;
 
     @FXML
@@ -130,20 +133,23 @@ public class controladorGestionInvitados {
             String[] datos = datosInvitados.get(email);
             String permisos = datos[2];
 
-            // permisos es un string de 3 caracteres: "101" donde:
-            // primer carácter: frecuencia cardíaca (1=sí, 0=no)
-            // segundo carácter: sueño (1=sí, 0=no)
-            // tercer carácter: actividad (1=sí, 0=no)
+            // permisos es un string de 4 caracteres: "1010" donde:
+            // posición 0: frecuencia cardíaca (1=detallado, 0=básico)
+            // posición 1: sueño (1=detallado, 0=básico)
+            // posición 2: actividad (1=detallado, 0=básico)
+            // posición 3: oxígeno (1=detallado, 0=básico)
 
-            if (permisos.length() >= 3) {
+            if (permisos.length() >= 4) {
                 chkFrecCardiaca.setSelected(permisos.charAt(0) == '1');
                 chkSueno.setSelected(permisos.charAt(1) == '1');
                 chkActividad.setSelected(permisos.charAt(2) == '1');
+                chkOxigeno.setSelected(permisos.charAt(3) == '1');
             } else {
-                // Si no hay permisos definidos, activar todos por defecto
+                // Si no hay permisos definidos, todos en basico
                 chkFrecCardiaca.setSelected(true);
                 chkSueno.setSelected(true);
                 chkActividad.setSelected(true);
+                chkOxigeno.setSelected(false);
             }
         }
     }
@@ -186,9 +192,9 @@ public class controladorGestionInvitados {
             String permisos =
                     (chkFrecCardiaca.isSelected() ? "1" : "0") +
                             (chkSueno.isSelected() ? "1" : "0") +
-                            (chkActividad.isSelected() ? "1" : "0");
+                            (chkActividad.isSelected() ? "1" : "0") +
+                            (chkOxigeno.isSelected() ? "1" : "0");
 
-            // Actualizar en memoria
             String[] datos = datosInvitados.get(invitadoSeleccionado);
             datos[2] = permisos;
 

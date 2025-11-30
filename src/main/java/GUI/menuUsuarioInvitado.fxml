@@ -39,7 +39,7 @@
         <!-- Sección: Información del Usuario Principal (modificada) -->
         <VBox layoutX="14.0" layoutY="90.0" prefHeight="220.0" prefWidth="540.0" spacing="10.0" style="-fx-border-color: #cccccc; -fx-border-width: 1; -fx-padding: 15; -fx-background-color: #F5F5F5;">
             <children>
-                <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: #0066CC;" text="👤 Información del Usuario Principal">
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: #0066CC;" text="Información del Usuario Principal">
                     <font>
                         <Font name="System Bold" size="16.0" />
                     </font>
@@ -63,7 +63,7 @@
         <!-- Sección: Enviar Comentarios -->
         <VBox layoutX="14.0" layoutY="330.0" prefHeight="250.0" prefWidth="540.0" spacing="10.0" style="-fx-border-color: #cccccc; -fx-border-width: 1; -fx-padding: 15; -fx-background-color: white;">
             <children>
-                <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: #0066CC;" text="💬 Enviar Comentario al Usuario Principal">
+                <Text strokeType="OUTSIDE" strokeWidth="0.0" style="-fx-fill: #0066CC;" text="Enviar Comentario al Usuario Principal">
                     <font>
                         <Font name="System Bold" size="16.0" />
                     </font>
@@ -85,8 +85,8 @@
 
                 <HBox alignment="CENTER_RIGHT" spacing="10.0">
                     <children>
-                        <Button fx:id="btnLimpiarComentario" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" style="-fx-background-color: #9E9E9E; -fx-text-fill: white;" text="🧹 Limpiar" />
-                        <Button fx:id="btnEnviarComentario" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="📤 Enviar" />
+                        <Button fx:id="btnLimpiarComentario" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" style="-fx-background-color: #9E9E9E; -fx-text-fill: white;" text="Limpiar" />
+                        <Button fx:id="btnEnviarComentario" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="Enviar" />
                     </children>
                 </HBox>
 

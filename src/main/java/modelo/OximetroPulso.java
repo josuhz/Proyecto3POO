@@ -1,10 +1,13 @@
 package modelo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class OximetroPulso extends DispositivoWearable {
+public class OximetroPulso extends DispositivoWearable implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     public OximetroPulso(String idDispositivo, String nombre, String marca) {
         super(idDispositivo, nombre, marca);
     }

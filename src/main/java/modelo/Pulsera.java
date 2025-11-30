@@ -1,10 +1,12 @@
 package modelo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Pulsera extends DispositivoWearable {
+public class Pulsera extends DispositivoWearable implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     public Pulsera(String idDispositivo, String nombre, String marca) {
         super(idDispositivo, nombre, marca);

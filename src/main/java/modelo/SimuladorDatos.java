@@ -248,4 +248,195 @@ public class SimuladorDatos {
             return "CRITICA";
         }
     }
+
+    /**
+     * Verifica y completa los datos faltantes desde la última fecha hasta hoy
+     */
+    public static void completarDatosFaltantes() {
+        completarFrecuenciaCardiacaFaltante();
+        completarActividadFisicaFaltante();
+        completarSuenoFaltante();
+        completarOxigenoFaltante();
+    }
+
+    /**
+     * Completa datos de frecuencia cardíaca faltantes
+     */
+    private static void completarFrecuenciaCardiacaFaltante() {
+        try {
+            File archivo = new File("frecuencia_cardiaca.txt");
+            if (!archivo.exists()) {
+                generarFrecuenciaCardiaca();
+                return;
+            }
+
+            LocalDate ultimaFecha = obtenerUltimaFechaArchivo(archivo);
+            LocalDate hoy = LocalDate.now();
+
+            if (ultimaFecha.isBefore(hoy)) {
+                // Agregar datos faltantes
+                try (PrintWriter writer = new PrintWriter(new FileWriter(archivo, true))) {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                    LocalDate fechaActual = ultimaFecha.plusDays(1);
+
+                    while (!fechaActual.isAfter(hoy)) {
+                        int frecuencia = generarFrecuenciaCardiacaRealista();
+                        String estado = obtenerEstadoFrecuenciaCardiaca(frecuencia);
+                        writer.println(fechaActual.format(formatter) + "," + frecuencia + "," + estado);
+                        fechaActual = fechaActual.plusDays(1);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error al completar frecuencia cardíaca: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Completa datos de actividad física faltantes
+     */
+    private static void completarActividadFisicaFaltante() {
+        try {
+            File archivo = new File("actividad_fisica.txt");
+            if (!archivo.exists()) {
+                generarActividadFisica();
+                return;
+            }
+
+            LocalDate ultimaFecha = obtenerUltimaFechaArchivo(archivo);
+            LocalDate hoy = LocalDate.now();
+
+            if (ultimaFecha.isBefore(hoy)) {
+                try (PrintWriter writer = new PrintWriter(new FileWriter(archivo, true))) {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                    LocalDate fechaActual = ultimaFecha.plusDays(1);
+
+                    while (!fechaActual.isAfter(hoy)) {
+                        int pasos = generarPasosRealistas();
+                        int calorias = generarCalorias(pasos);
+                        String nivelActividad = obtenerNivelActividad(pasos);
+                        writer.println(fechaActual.format(formatter) + "," + pasos + "," + calorias + "," + nivelActividad);
+                        fechaActual = fechaActual.plusDays(1);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error al completar actividad física: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Completa datos de sueño faltantes
+     */
+    private static void completarSuenoFaltante() {
+        try {
+            File archivo = new File("sueño.txt");
+            if (!archivo.exists()) {
+                generarSueno();
+                return;
+            }
+
+            LocalDate ultimaFecha = obtenerUltimaFechaArchivo(archivo);
+            LocalDate hoy = LocalDate.now();
+
+            if (ultimaFecha.isBefore(hoy)) {
+                try (PrintWriter writer = new PrintWriter(new FileWriter(archivo, true))) {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                    LocalDate fechaActual = ultimaFecha.plusDays(1);
+
+                    while (!fechaActual.isAfter(hoy)) {
+                        double[] datosSueno = generarDatosSuenoRealistas();
+                        double totalHoras = datosSueno[0] + datosSueno[1] + datosSueno[2];
+                        String estadoSueno = obtenerEstadoSueno(totalHoras);
+
+                        String totalHorasStr = String.format(Locale.US, "%.1f", totalHoras);
+                        String ligeroStr = String.format(Locale.US, "%.1f", datosSueno[0]);
+                        String profundoStr = String.format(Locale.US, "%.1f", datosSueno[1]);
+                        String remStr = String.format(Locale.US, "%.1f", datosSueno[2]);
+
+                        writer.println(fechaActual.format(formatter) + "," +
+                                totalHorasStr + "," +
+                                ligeroStr + "," +
+                                profundoStr + "," +
+                                remStr + "," +
+                                estadoSueno);
+                        fechaActual = fechaActual.plusDays(1);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error al completar datos de sueño: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Completa datos de oxígeno faltantes
+     */
+    private static void completarOxigenoFaltante() {
+        try {
+            File archivo = new File("oxigeno.txt");
+            if (!archivo.exists()) {
+                generarOxigeno();
+                return;
+            }
+
+            LocalDate ultimaFecha = obtenerUltimaFechaArchivo(archivo);
+            LocalDate hoy = LocalDate.now();
+
+            if (ultimaFecha.isBefore(hoy)) {
+                try (PrintWriter writer = new PrintWriter(new FileWriter(archivo, true))) {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                    LocalDate fechaActual = ultimaFecha.plusDays(1);
+
+                    while (!fechaActual.isAfter(hoy)) {
+                        double spo2 = generarOxigenoRealista();
+                        String estado = obtenerEstadoOxigeno(spo2);
+                        writer.println(fechaActual.format(formatter) + "," +
+                                String.format(Locale.US, "%.1f", spo2) + "," + estado);
+                        fechaActual = fechaActual.plusDays(1);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error al completar datos de oxígeno: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Obtiene la última fecha del archivo
+     */
+    private static LocalDate obtenerUltimaFechaArchivo(File archivo) {
+        LocalDate ultimaFecha = LocalDate.now().minusDays(30);
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            String ultimaLinea = null;
+
+            while ((linea = reader.readLine()) != null) {
+                if (!linea.trim().isEmpty()) {
+                    ultimaLinea = linea;
+                }
+            }
+
+            if (ultimaLinea != null) {
+                String[] partes = ultimaLinea.split(",");
+                if (partes.length > 0) {
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                    ultimaFecha = LocalDate.parse(partes[0].trim(), formatter);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error al leer última fecha: " + e.getMessage());
+        }
+
+        return ultimaFecha;
+    }
+
+    /**
+     * Verifica si hay dispositivos vinculados (para determinar si generar datos)
+     */
+    public static boolean hayDispositivosVinculados() {
+        File archivoDispositivos = new File("dispositivos.dat");
+        return archivoDispositivos.exists() && archivoDispositivos.length() > 0;
+    }
 }

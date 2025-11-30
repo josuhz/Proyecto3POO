@@ -12,10 +12,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import modelo.*;
-
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.Random;
 
 public class controladorDispositivos {
@@ -32,27 +30,22 @@ public class controladorDispositivos {
     @FXML private Button btnAgregarSmartWatch;
     @FXML private Button btnAgregarPulsera;
     @FXML private Button btnAgregarOximetro;
-    @FXML private Button btnEliminarDispositivo; // Cambio de nombre
+    @FXML private Button btnEliminarDispositivo;
     @FXML private Button btnMostrarDispositivos;
-    @FXML private Button btnLimpiarPantalla; // Nuevo
-    @FXML private ChoiceBox<String> chbDispositivos; // Nuevo
+    @FXML private Button btnLimpiarPantalla;
+    @FXML private ChoiceBox<String> chbDispositivos;
 
     private GestorDispositivos gestor = GestorDispositivos.getInstancia();
-    private Random random = new Random();
-    private int contadorSmartWatch = 1;
-    private int contadorPulsera = 1;
-    private int contadorOximetro = 1;
+
 
     @FXML
     public void initialize() {
-        // Configurar navegación
         menuDashboard.setOnAction(event -> irAVentana("Dashboard.fxml", "Dashboard"));
         menuDispositivos.setOnAction(event -> irAVentana("menuDispositivos.fxml", "Mis Dispositivos"));
         menuGestionInvitados.setOnAction(event -> irAVentana("menuGestionInvitados.fxml", "Gestión de Invitados"));
         menuRangos.setOnAction(event -> irAVentana("menuRangos.fxml", "Rangos"));
         menuCerrarSesion.setOnAction(event -> cerrarSesion());
 
-        // Configurar botones de dispositivos
         btnAgregarSmartWatch.setOnAction(event -> agregarSmartWatch());
         btnAgregarPulsera.setOnAction(event -> agregarPulsera());
         btnAgregarOximetro.setOnAction(event -> agregarOximetro());
@@ -64,9 +57,11 @@ public class controladorDispositivos {
     }
 
     private void agregarSmartWatch() {
-        String id = "SW-" + String.format("%04d", contadorSmartWatch++);
-        SmartWatch smartwatch = new SmartWatch(id, "Apple Watch Series " + (7 + random.nextInt(3)), "Apple");
+        String id = "SW-" + String.format("%04d", gestor.getContadorSmartWatch());
+        SmartWatch smartwatch = new SmartWatch(id, "Apple Watch Series " + (7 + new Random().nextInt(3)), "Apple");
         gestor.agregarDispositivo(smartwatch);
+        gestor.setContadorSmartWatch(gestor.getContadorSmartWatch() + 1);
+        gestor.guardarDispositivos();
 
         SimuladorDatos.generarFrecuenciaCardiaca();
         SimuladorDatos.generarActividadFisica();
@@ -81,10 +76,12 @@ public class controladorDispositivos {
     }
 
     private void agregarPulsera() {
-        String id = "PL-" + String.format("%04d", contadorPulsera++);
+        String id = "PL-" + String.format("%04d", gestor.getContadorPulsera());
         String[] marcas = {"Fitbit", "Xiaomi", "Samsung", "Garmin"};
-        Pulsera pulsera = new Pulsera(id, "Pulsera " + marcas[random.nextInt(marcas.length)], marcas[random.nextInt(marcas.length)]);
+        Pulsera pulsera = new Pulsera(id, "Pulsera " + marcas[new Random().nextInt(marcas.length)], marcas[new Random().nextInt(marcas.length)]);
         gestor.agregarDispositivo(pulsera);
+        gestor.setContadorPulsera(gestor.getContadorPulsera() + 1);
+        gestor.guardarDispositivos();
 
         SimuladorDatos.generarFrecuenciaCardiaca();
         SimuladorDatos.generarActividadFisica();
@@ -97,9 +94,11 @@ public class controladorDispositivos {
     }
 
     private void agregarOximetro() {
-        String id = "OX-" + String.format("%04d", contadorOximetro++);
+        String id = "OX-" + String.format("%04d", gestor.getContadorOximetro());
         OximetroPulso oximetro = new OximetroPulso(id, "Oxímetro de Pulso", "Wellue");
         gestor.agregarDispositivo(oximetro);
+        gestor.setContadorOximetro(gestor.getContadorOximetro() + 1);
+        gestor.guardarDispositivos();
 
         SimuladorDatos.generarFrecuenciaCardiaca();
         SimuladorDatos.generarOxigeno();
@@ -119,10 +118,7 @@ public class controladorDispositivos {
             return;
         }
 
-        // Extraer el ID del dispositivo de la selección
         String idDispositivo = extraerIdDeSeleccion(seleccion);
-
-        // Buscar el dispositivo antes de eliminarlo
         DispositivoWearable dispositivo = gestor.buscarDispositivo(idDispositivo);
 
         if (dispositivo == null) {
@@ -130,14 +126,12 @@ public class controladorDispositivos {
             return;
         }
 
-        // Guardar el tipo antes de eliminar
         String tipoDispositivo = dispositivo.getTipoDispositivo();
-
-        // Eliminar el dispositivo
         boolean eliminado = gestor.eliminarDispositivo(idDispositivo);
 
         if (eliminado) {
-            // Verificar si quedan dispositivos del mismo tipo
+            gestor.guardarDispositivos();
+
             verificarYEliminarArchivos(tipoDispositivo);
 
             actualizarInterfaz();
@@ -148,7 +142,6 @@ public class controladorDispositivos {
     }
 
     private String extraerIdDeSeleccion(String seleccion) {
-        // Formato esperado: "Tipo - Nombre (ID)"
         int inicioId = seleccion.lastIndexOf("(");
         int finId = seleccion.lastIndexOf(")");
 
@@ -160,7 +153,6 @@ public class controladorDispositivos {
     }
 
     private void verificarYEliminarArchivos(String tipoDispositivo) {
-        // Contar cuántos dispositivos quedan de cada tipo
         int smartwatches = 0;
         int pulseras = 0;
         int oximetros = 0;
@@ -171,9 +163,7 @@ public class controladorDispositivos {
             else if (d instanceof OximetroPulso) oximetros++;
         }
 
-        // Eliminar archivos solo si no quedan dispositivos que los generen
         if (smartwatches == 0) {
-            // SmartWatch genera: FC, Actividad, Sueño
             if (pulseras == 0 && oximetros == 0) {
                 new File("frecuencia_cardiaca.txt").delete();
             }
@@ -184,7 +174,6 @@ public class controladorDispositivos {
         }
 
         if (pulseras == 0) {
-            // Pulsera genera: FC, Actividad
             if (smartwatches == 0 && oximetros == 0) {
                 new File("frecuencia_cardiaca.txt").delete();
             }
@@ -194,7 +183,6 @@ public class controladorDispositivos {
         }
 
         if (oximetros == 0) {
-            // Oxímetro genera: FC, Oxígeno
             if (smartwatches == 0 && pulseras == 0) {
                 new File("frecuencia_cardiaca.txt").delete();
             }
@@ -226,7 +214,6 @@ public class controladorDispositivos {
     private void actualizarInterfaz() {
         txtTituloDispositivos.setText("Dispositivos Vinculados (" + gestor.getCantidadDispositivos() + ")");
 
-        // Actualizar ChoiceBox
         actualizarChoiceBox();
 
         if (gestor.getCantidadDispositivos() == 0) {
@@ -247,7 +234,6 @@ public class controladorDispositivos {
             chbDispositivos.getItems().add(item);
         }
 
-        // Seleccionar el primero si hay dispositivos
         if (!chbDispositivos.getItems().isEmpty()) {
             chbDispositivos.setValue(chbDispositivos.getItems().get(0));
         }

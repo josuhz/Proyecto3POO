@@ -10,6 +10,7 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import modelo.SimuladorDatos;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,10 +49,14 @@ public class controladorLogin {
                 return;
             }
 
-            // Verificar credenciales usando el manejador
             if (!ManejadorUsuarios.verificarCredenciales(correo, contrasena)) {
                 System.out.println("Credenciales incorrectas");
                 return;
+            }
+
+            if (SimuladorDatos.hayDispositivosVinculados()) {
+                SimuladorDatos.completarDatosFaltantes();
+                System.out.println("Datos actualizados hasta la fecha actual");
             }
 
             // Cargar Dashboard

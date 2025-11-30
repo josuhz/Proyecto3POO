@@ -1,8 +1,11 @@
 package modelo;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public abstract class DispositivoWearable {
+public abstract class DispositivoWearable implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String idDispositivo;
     private String nombre;
     private String marca;

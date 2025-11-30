@@ -50,7 +50,6 @@ public class LectorDatosSimulador {
         List<Map<String, String>> datos = new ArrayList<>();
         List<LocalDate> fechas = obtenerFechasDisponibles();
 
-        // Ordenar fechas y tomar las últimas 7
         fechas.sort(LocalDate::compareTo);
         int startIndex = Math.max(0, fechas.size() - 7);
 
@@ -83,13 +82,11 @@ public class LectorDatosSimulador {
                 String[] partes = linea.split(",");
                 if (partes.length >= 2) {
                     try {
-                        LocalDate fecha = LocalDate.parse(partes[0].trim()); // Fecha está en columna 0
-                        double spo2 = Double.parseDouble(partes[1].trim());  // SpO2 está en columna 1
+                        LocalDate fecha = LocalDate.parse(partes[0].trim());
+                        double spo2 = Double.parseDouble(partes[1].trim());
 
-                        // Guardar el valor de cada día
                         oxigenoPorFecha.put(fecha, spo2);
                     } catch (Exception e) {
-                        // Ignorar líneas mal formateadas
                         System.out.println("Error al parsear línea: " + linea);
                     }
                 }
@@ -99,14 +96,12 @@ public class LectorDatosSimulador {
             return resultado;
         }
 
-        // Obtener las últimas 7 fechas
         List<LocalDate> fechasOrdenadas = new ArrayList<>(oxigenoPorFecha.keySet());
         Collections.sort(fechasOrdenadas);
 
         int inicio = Math.max(0, fechasOrdenadas.size() - 7);
         List<LocalDate> ultimas7Fechas = fechasOrdenadas.subList(inicio, fechasOrdenadas.size());
 
-        // Crear lista de resultados
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM");
         for (LocalDate fecha : ultimas7Fechas) {
             Map<String, String> dato = new HashMap<>();
@@ -116,6 +111,48 @@ public class LectorDatosSimulador {
         }
 
         return resultado;
+    }
+
+    public static List<Map<String, String>> obtenerUltimos7DiasActividad() {
+        List<Map<String, String>> datos = new ArrayList<>();
+        List<LocalDate> fechas = obtenerFechasDisponibles();
+
+        fechas.sort(LocalDate::compareTo);
+        int startIndex = Math.max(0, fechas.size() - 7);
+
+        for (int i = startIndex; i < fechas.size(); i++) {
+            Map<String, String> datoDia = new HashMap<>();
+            try {
+                datoDia.putAll(leerActividadFisica(fechas.get(i).format(formatter)));
+                datoDia.put("fecha", fechas.get(i).format(DateTimeFormatter.ofPattern("dd/MM")));
+                datos.add(datoDia);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return datos;
+    }
+
+    public static List<Map<String, String>> obtenerUltimos7DiasSueno() {
+        List<Map<String, String>> datos = new ArrayList<>();
+        List<LocalDate> fechas = obtenerFechasDisponibles();
+
+        fechas.sort(LocalDate::compareTo);
+        int startIndex = Math.max(0, fechas.size() - 7);
+
+        for (int i = startIndex; i < fechas.size(); i++) {
+            Map<String, String> datoDia = new HashMap<>();
+            try {
+                datoDia.putAll(leerSueno(fechas.get(i).format(formatter)));
+                datoDia.put("fecha", fechas.get(i).format(DateTimeFormatter.ofPattern("dd/MM")));
+                datos.add(datoDia);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return datos;
     }
 
     private static Map<String, String> leerFrecuenciaCardiaca(String fecha) throws IOException {

@@ -1,8 +1,9 @@
 package modelo;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class MetricaOxigeno extends Metrica {
+public class MetricaOxigeno extends Metrica implements Serializable {
     private double spo2; // Saturación de oxígeno en porcentaje (95-100% normal)
 
     public MetricaOxigeno(String dispositivoOrigen, String usuarioId, double spo2) {

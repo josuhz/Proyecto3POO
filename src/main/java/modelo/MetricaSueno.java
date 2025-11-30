@@ -1,6 +1,8 @@
 package modelo;
 
-public class MetricaSueno extends Metrica{
+import java.io.Serializable;
+
+public class MetricaSueno extends Metrica implements Serializable {
     private double horasDormidas;
     private int calidadSueno;
     private int fasesREM;

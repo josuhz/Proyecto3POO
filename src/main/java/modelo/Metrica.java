@@ -1,7 +1,9 @@
 package modelo;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public abstract class Metrica {
+public abstract class Metrica implements Serializable {
     private String idMetrica;
     private LocalDateTime timestamp;
     private String dispositivoOrigen;

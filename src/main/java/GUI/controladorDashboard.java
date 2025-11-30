@@ -7,10 +7,8 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -36,6 +34,8 @@ public class controladorDashboard {
     private MenuItem menuGestionInvitados;
     @FXML
     private MenuItem menuRangos;
+    @FXML
+    private MenuItem menuReporte;
     @FXML
     private MenuItem menuCerrarSesion;
     @FXML
@@ -74,11 +74,11 @@ public class controladorDashboard {
         menuDispositivos.setOnAction(event -> irAVentana("menuDispositivos.fxml", "Mis Dispositivos"));
         menuGestionInvitados.setOnAction(event -> irAVentana("menuGestionInvitados.fxml", "Gestión de Invitados"));
         menuRangos.setOnAction(event -> irAVentana("menuRangos.fxml", "Rangos"));
+        menuRangos.setOnAction(event -> irAVentana("Reporte.fxml", "Reporte"));
         menuCerrarSesion.setOnAction(event -> cerrarSesion());
 
-        // Cargar nombre del usuario
         cargarNombreUsuario();
-
+        cargarComentariosInvitados();
         configurarChoiceBoxFechas();
         cargarDatosIniciales();
         configurarGraficoFrecuenciaCardiaca();
@@ -303,13 +303,64 @@ public class controladorDashboard {
         }
     }
 
+    private void cargarComentariosInvitados() {
+        File archivo = new File("comentarios.txt");
+
+        if (!archivo.exists()) {
+            txtObservaciones.setText("No hay comentarios de invitados.");
+            return;
+        }
+
+        try {
+            List<String> comentarios = new ArrayList<>();
+            BufferedReader br = new BufferedReader(new FileReader(archivo));
+            String linea;
+
+            while ((linea = br.readLine()) != null) {
+                if (!linea.trim().isEmpty()) {
+                    comentarios.add(linea);
+                }
+            }
+            br.close();
+
+            if (comentarios.isEmpty()) {
+                txtObservaciones.setText("No hay comentarios de invitados.");
+                archivo.delete();
+                return;
+            }
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("COMENTARIOS DE INVITADOS\n");
+            sb.append("============================\n\n");
+
+            for (String comentario : comentarios) {
+                String[] partes = comentario.split("\\|");
+                if (partes.length >= 2) {
+                    String nombre = partes[0];
+                    String texto = partes[1];
+                    String fecha = partes.length >= 3 ? partes[2] : "Fecha desconocida";
+
+                    sb.append("👤 ").append(nombre).append(" (").append(fecha).append(")\n");
+                    sb.append("   ").append(texto).append("\n\n");
+                }
+            }
+
+            txtObservaciones.setText(sb.toString());
+
+            archivo.delete();
+            System.out.println("Comentarios mostrados y archivo borrado");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            txtObservaciones.setText("Error al cargar comentarios.");
+        }
+    }
+
     private void actualizarAreasTexto(Map<String, String> datos) {
         StringBuilder alertas = new StringBuilder();
-        StringBuilder observaciones = new StringBuilder();
 
         int contadorAlertas = 0;
 
-        // Construir alertas basadas en los estados
         if ("ALERTA_BAJA".equals(datos.get("estadoFrecuencia"))) {
             alertas.append("Frecuencia cardíaca BAJA: ").append(datos.get("frecuencia")).append(" BPM\n");
             contadorAlertas++;
@@ -324,30 +375,13 @@ public class controladorDashboard {
         if ("DEFICIENTE".equals(datos.get("estadoSueno"))) {
             alertas.append("Sueño DEFICIENTE: ").append(datos.get("totalSueno")).append(" horas\n");
             contadorAlertas++;
-        } else if ("REGULAR".equals(datos.get("estadoSueno"))) {
-            observaciones.append("• Sueño REGULAR: ").append(datos.get("totalSueno")).append(" horas\n");
-        }
-
-        // Información de actividad
-        if (datos.containsKey("nivelActividad")) {
-            String nivelActividad = datos.get("nivelActividad");
-            observaciones.append("• Nivel de actividad: ").append(convertirNivelActividad(nivelActividad)).append("\n");
-        }
-
-        // Información adicional
-        if (datos.containsKey("calorias")) {
-            observaciones.append("• Calorías quemadas: ").append(datos.get("calorias")).append("\n");
         }
 
         if (alertas.length() == 0) {
             alertas.append("No hay alertas críticas para este día");
         }
 
-        // Actualizar el título de alertas con el contador
-        actualizarTituloAlertas(contadorAlertas);
-
         txtAlertas.setText(alertas.toString());
-        txtObservaciones.setText(observaciones.toString());
     }
 
     private String convertirNivelActividad(String nivelActividad) {
@@ -359,11 +393,6 @@ public class controladorDashboard {
             case "MUY_ACTIVO": return "Muy Activo";
             default: return nivelActividad;
         }
-    }
-
-    private void actualizarTituloAlertas(int cantidad) {
-        // Buscar el label de alertas y actualizar su texto
-        // Puedes agregar un fx:id al label de alertas si quieres manipularlo directamente
     }
 
     private void configurarGraficoFrecuenciaCardiaca() {
