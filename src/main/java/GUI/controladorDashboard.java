@@ -35,8 +35,6 @@ public class controladorDashboard {
     @FXML
     private MenuItem menuRangos;
     @FXML
-    private MenuItem menuReporte;
-    @FXML
     private MenuItem menuCerrarSesion;
     @FXML
     private Label lblUsuario;
@@ -74,7 +72,6 @@ public class controladorDashboard {
         menuDispositivos.setOnAction(event -> irAVentana("menuDispositivos.fxml", "Mis Dispositivos"));
         menuGestionInvitados.setOnAction(event -> irAVentana("menuGestionInvitados.fxml", "Gestión de Invitados"));
         menuRangos.setOnAction(event -> irAVentana("menuRangos.fxml", "Rangos"));
-        menuRangos.setOnAction(event -> irAVentana("Reporte.fxml", "Reporte"));
         menuCerrarSesion.setOnAction(event -> cerrarSesion());
 
         cargarNombreUsuario();

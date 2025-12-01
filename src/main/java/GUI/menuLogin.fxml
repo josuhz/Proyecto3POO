@@ -10,7 +10,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="320.0" prefWidth="400.0" style="-fx-background-color: white; -fx-border-color: #cccccc; -fx-border-width: 2;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.controladorLogin">
+<AnchorPane prefHeight="320.0" prefWidth="426.0" style="-fx-background-color: white; -fx-border-color: #cccccc; -fx-border-width: 2;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.controladorLogin">
     <children>
         <!-- Icono médico superior -->
         <ImageView fitHeight="98.0" fitWidth="112.0" layoutX="268.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true">
@@ -31,7 +31,7 @@
                 <Font size="14.0" />
             </font>
         </Text>
-        <TextField fx:id="correoField" layoutX="45.0" layoutY="118.0" prefHeight="30.0" prefWidth="313.0" promptText="Correo" style="-fx-background-color: transparent; -fx-border-color: transparent transparent #B3D9FF transparent; -fx-border-width: 0 0 2 0;">
+        <TextField fx:id="correoField" layoutX="45.0" layoutY="118.0" prefHeight="30.0" prefWidth="341.0" promptText="Correo" style="-fx-background-color: transparent; -fx-border-color: transparent transparent #B3D9FF transparent; -fx-border-width: 0 0 2 0;">
             <font>
                 <Font size="13.0" />
             </font>
@@ -49,7 +49,7 @@
                 <Font size="14.0" />
             </font>
         </Text>
-        <PasswordField fx:id="contrasenaField" layoutX="47.0" layoutY="198.0" prefHeight="30.0" prefWidth="313.0" promptText="Contraseña" style="-fx-background-color: transparent; -fx-border-color: transparent transparent #B3D9FF transparent; -fx-border-width: 0 0 2 0;">
+        <PasswordField fx:id="contrasenaField" layoutX="47.0" layoutY="198.0" prefHeight="30.0" prefWidth="341.0" promptText="Contraseña" style="-fx-background-color: transparent; -fx-border-color: transparent transparent #B3D9FF transparent; -fx-border-width: 0 0 2 0;">
             <font>
                 <Font size="13.0" />
             </font>
@@ -63,14 +63,14 @@
         </Text>
 
         <!-- Hyperlink "entra como invitado" -->
-        <Hyperlink fx:id="enlaceInvitado" layoutX="153.0" layoutY="257.0" prefHeight="23.0" prefWidth="100.0" style="-fx-text-fill: #4A90E2;" text="entra como invitado">
+        <Hyperlink fx:id="enlaceInvitado" layoutX="153.0" layoutY="257.0" prefHeight="23.0" prefWidth="120.0" style="-fx-text-fill: #4A90E2;" text="entra como invitado">
             <font>
                 <Font size="12.0" />
             </font>
         </Hyperlink>
 
         <!-- Botón Iniciar Sesión -->
-        <Button fx:id="btnIniciarSesion" layoutX="276.0" layoutY="255.0" mnemonicParsing="false" style="-fx-background-color: #C2E67E; -fx-text-fill: white; -fx-background-radius: 15; -fx-cursor: hand;" text="Iniciar Sesión">
+        <Button fx:id="btnIniciarSesion" layoutX="277.0" layoutY="255.0" mnemonicParsing="false" style="-fx-background-color: #C2E67E; -fx-text-fill: white; -fx-background-radius: 15; -fx-cursor: hand;" text="Iniciar Sesión">
             <font>
                 <Font size="13.0" />
             </font>

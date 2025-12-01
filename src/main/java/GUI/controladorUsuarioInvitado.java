@@ -22,8 +22,6 @@ public class controladorUsuarioInvitado {
     @FXML
     private MenuButton menuNavegacion;
     @FXML
-    private MenuItem menuDashboardInvitado;
-    @FXML
     private MenuItem menuCerrarSesion;
     @FXML
     private TextArea txtInformacionUsuario;
@@ -41,7 +39,6 @@ public class controladorUsuarioInvitado {
 
     @FXML
     public void initialize() {
-        menuDashboardInvitado.setOnAction(event -> irAVentana("dashboardInvitado.fxml", "Dashboard Invitado"));
         menuCerrarSesion.setOnAction(event -> cerrarSesion());
 
         btnEnviarComentario.setOnAction(event -> enviarComentario());

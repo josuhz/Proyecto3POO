@@ -30,7 +30,6 @@
             <MenuItem fx:id="menuDispositivos" mnemonicParsing="false" text="Mis Dispositivos" />
             <MenuItem fx:id="menuGestionInvitados" mnemonicParsing="false" text="Gestión Invitados" />
             <MenuItem fx:id="menuRangos" mnemonicParsing="false" text="Rangos" />
-            <MenuItem fx:id="menuReporte" mnemonicParsing="false" text="Reporte" />
             <MenuItem fx:id="menuCerrarSesion" mnemonicParsing="false" text="Cerrar Sesión" />
         </items>
     </MenuButton>

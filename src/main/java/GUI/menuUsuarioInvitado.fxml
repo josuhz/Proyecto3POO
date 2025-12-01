@@ -23,7 +23,6 @@
                 <Font name="System Bold" size="13.0" />
             </font>
             <items>
-                <MenuItem fx:id="menuDashboardInvitado" mnemonicParsing="false" text="Dashboard Invitado" />
                 <MenuItem fx:id="menuCerrarSesion" mnemonicParsing="false" text="Cerrar Sesión" />
             </items>
         </MenuButton>
