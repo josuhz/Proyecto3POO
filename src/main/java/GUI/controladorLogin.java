@@ -55,11 +55,10 @@ public class controladorLogin {
             }
 
             if (SimuladorDatos.hayDispositivosVinculados()) {
-                SimuladorDatos.completarDatosFaltantes();
+                SimuladorDatos.completarSoloDatosExistentes();
                 System.out.println("Datos actualizados hasta la fecha actual");
             }
 
-            // Cargar Dashboard
             String userDir = System.getProperty("user.dir");
             File fxmlFile = new File(userDir, "src/main/java/GUI/Dashboard.fxml");
 

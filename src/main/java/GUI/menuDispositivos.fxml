@@ -74,8 +74,7 @@
         </VBox>
 
         <!-- MenuButton para navegación -->
-        <MenuButton fx:id="menuNavegacion" contentDisplay="BOTTOM" layoutX="31.0" layoutY="34.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="40.0" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" text="≡" textAlignment="JUSTIFY">
-            <font>
+        <MenuButton fx:id="menuNavegacion" contentDisplay="BOTTOM" layoutX="16.0" layoutY="13.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="48.0" style="-fx-text-fill: white;" text="≡" textAlignment="JUSTIFY">            <font>
                 <Font name="System Bold" size="13.0" />
             </font>
             <items>

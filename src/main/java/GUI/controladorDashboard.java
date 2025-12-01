@@ -21,6 +21,7 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
+import modelo.GenerarReporte;
 
 public class controladorDashboard {
 
@@ -34,6 +35,8 @@ public class controladorDashboard {
     private MenuItem menuGestionInvitados;
     @FXML
     private MenuItem menuRangos;
+    @FXML
+    public MenuItem menuReporte;
     @FXML
     private MenuItem menuCerrarSesion;
     @FXML
@@ -67,11 +70,13 @@ public class controladorDashboard {
 
     @FXML
     public void initialize() {
-        // Configurar navegación
         menuDashboard.setOnAction(event -> irAVentana("Dashboard.fxml", "Dashboard"));
         menuDispositivos.setOnAction(event -> irAVentana("menuDispositivos.fxml", "Mis Dispositivos"));
         menuGestionInvitados.setOnAction(event -> irAVentana("menuGestionInvitados.fxml", "Gestión de Invitados"));
         menuRangos.setOnAction(event -> irAVentana("menuRangos.fxml", "Rangos"));
+        menuReporte.setOnAction(event -> {
+            System.out.println("Generando reporte...");
+            GenerarReporte.generarYMostrarReporte();});
         menuCerrarSesion.setOnAction(event -> cerrarSesion());
 
         cargarNombreUsuario();
@@ -96,15 +101,22 @@ public class controladorDashboard {
     }
 
     private void configurarChoiceBoxFechas() {
-        // Validar que existan archivos antes de intentar leer
-        if (!validarArchivosExisten()) {
-            chbFechas.setItems(FXCollections.observableArrayList());
+        // Obtener fechas disponibles del simulador (manejar null si no hay datos)
+        List<LocalDate> fechas = new ArrayList<>();
+
+        try {
+            fechas = LectorDatosSimulador.obtenerFechasDisponibles();
+        } catch (Exception e) {
+            System.out.println("No se pudieron obtener fechas disponibles: " + e.getMessage());
+        }
+
+        // Si no hay fechas disponibles
+        if (fechas == null || fechas.isEmpty()) {
+            chbFechas.setItems(FXCollections.observableArrayList("No hay datos"));
+            chbFechas.setValue("No hay datos");
             lblFecha.setText("No hay datos disponibles");
             return;
         }
-
-        // Obtener fechas disponibles del simulador
-        List<LocalDate> fechas = LectorDatosSimulador.obtenerFechasDisponibles();
 
         // Convertir a formato de visualización
         ObservableList<String> fechasDisplay = FXCollections.observableArrayList();
@@ -122,48 +134,36 @@ public class controladorDashboard {
         // Configurar listener para cuando se seleccione una fecha
         chbFechas.setOnAction(event -> {
             String fechaSeleccionada = chbFechas.getValue();
-            if (fechaSeleccionada != null) {
+            if (fechaSeleccionada != null && !fechaSeleccionada.equals("No hay datos")) {
                 cargarDatosPorFecha(fechaSeleccionada);
             }
         });
     }
 
-    private boolean validarArchivosExisten() {
-        File fcFile = new File("frecuencia_cardiaca.txt");
-        File actividadFile = new File("actividad_fisica.txt");
-        File suenoFile = new File("sueño.txt");
-
-        return fcFile.exists() || actividadFile.exists() || suenoFile.exists();
-    }
-
     private void cargarDatosIniciales() {
-        if (!validarArchivosExisten()) {
+        String fechaSeleccionada = chbFechas.getValue();
+        if (fechaSeleccionada != null && !fechaSeleccionada.equals("No hay datos")) {
+            cargarDatosPorFecha(fechaSeleccionada);
+        } else {
             mostrarMensajeSinDatos();
-            return;
-        }
-
-        if (chbFechas.getValue() != null) {
-            cargarDatosPorFecha(chbFechas.getValue());
         }
     }
 
     private void cargarDatosPorFecha(String fechaDisplay) {
         try {
-            if (!validarArchivosExisten()) {
-                mostrarMensajeSinDatos();
-                return;
-            }
-
             LocalDate fecha = LocalDate.parse(fechaDisplay, displayFormatter);
-
             lblFecha.setText("Resumen del día: " + fechaDisplay);
 
-            // Obtener datos del simulador
-            Map<String, String> datos = LectorDatosSimulador.leerDatosPorFecha(fecha);
+            Map<String, String> datos = new HashMap<>();
+            try {
+                datos = LectorDatosSimulador.leerDatosPorFecha(fecha);
+            } catch (Exception e) {
+                System.out.println("Error al leer datos para fecha " + fechaDisplay + ": " + e.getMessage());
+            }
 
             // Validar que se hayan obtenido datos
             if (datos == null || datos.isEmpty()) {
-                mostrarMensajeSinDatos();
+                mostrarMensajeSinDatosParaFecha(fechaDisplay);
                 return;
             }
 
@@ -174,19 +174,20 @@ public class controladorDashboard {
             actualizarAreasTexto(datos);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Error al cargar datos para fecha " + fechaDisplay + ": " + e.getMessage());
             mostrarMensajeError();
         }
     }
 
     private void actualizarLabels(Map<String, String> datos) {
-        // Frecuencia cardíaca
-        if (datos.containsKey("frecuencia")) {
+        if (datos.containsKey("frecuencia") && datos.get("frecuencia") != null) {
             lblNivelCardiaco.setText(datos.get("frecuencia"));
+        } else {
+            lblNivelCardiaco.setText("--");
         }
 
         // Estado de frecuencia cardíaca
-        if (datos.containsKey("estadoFrecuencia")) {
+        if (datos.containsKey("estadoFrecuencia") && datos.get("estadoFrecuencia") != null) {
             String estadoFC = datos.get("estadoFrecuencia");
             lblEstado.setText(convertirEstadoFC(estadoFC));
 
@@ -205,10 +206,13 @@ public class controladorDashboard {
                     lblEstado.setStyle("-fx-text-fill: #666666;");
                     break;
             }
+        } else {
+            lblEstado.setText("Sin datos");
+            lblEstado.setStyle("-fx-text-fill: #666666;");
         }
 
         // Actividad (pasos)
-        if (datos.containsKey("pasos")) {
+        if (datos.containsKey("pasos") && datos.get("pasos") != null) {
             String pasos = datos.get("pasos");
             try {
                 int pasosInt = Integer.parseInt(pasos);
@@ -216,13 +220,15 @@ public class controladorDashboard {
             } catch (NumberFormatException e) {
                 lblActividad.setText("🏃 " + pasos);
             }
+        } else {
+            lblActividad.setText("🏃 --");
         }
+
         // Nivel de actividad
-        if (datos.containsKey("nivelActividad")) {
+        if (datos.containsKey("nivelActividad") && datos.get("nivelActividad") != null) {
             String nivelActividad = datos.get("nivelActividad");
             lblActividadRealizada.setText(convertirNivelActividad(nivelActividad));
 
-            // Cambiar color según el nivel de actividad
             switch (nivelActividad) {
                 case "SEDENTARIO":
                     lblActividadRealizada.setStyle("-fx-text-fill: #FF0000;");
@@ -243,37 +249,45 @@ public class controladorDashboard {
                     lblActividadRealizada.setStyle("-fx-text-fill: #666666;");
                     break;
             }
+        } else {
+            lblActividadRealizada.setText("Sin datos");
+            lblActividadRealizada.setStyle("-fx-text-fill: #666666;");
         }
 
         // Sueño
-        if (datos.containsKey("totalSueno")) {
+        if (datos.containsKey("totalSueno") && datos.get("totalSueno") != null) {
             String horasSueno = datos.get("totalSueno");
             lblHorasSueno.setText("😴 " + horasSueno + " H");
+        } else {
+            lblHorasSueno.setText("😴 -- H");
         }
 
         // Calidad de sueño
-        if (datos.containsKey("estadoSueno")) {
+        if (datos.containsKey("estadoSueno") && datos.get("estadoSueno") != null) {
             String estadoSueno = datos.get("estadoSueno");
             lblCalidadSueno.setText(convertirEstadoSueno(estadoSueno));
 
             // Cambiar color según la calidad del sueño
             switch (estadoSueno) {
                 case "DEFICIENTE":
-                    lblCalidadSueno.setStyle("-fx-text-fill: #ff0000;"); // Rojo
+                    lblCalidadSueno.setStyle("-fx-text-fill: #ff0000;");
                     break;
                 case "REGULAR":
-                    lblCalidadSueno.setStyle("-fx-text-fill: #ff9800;"); // Naranja
+                    lblCalidadSueno.setStyle("-fx-text-fill: #ff9800;");
                     break;
                 case "BUENO":
-                    lblCalidadSueno.setStyle("-fx-text-fill: #4caf50;"); // Verde
+                    lblCalidadSueno.setStyle("-fx-text-fill: #4caf50;");
                     break;
                 case "EXCELENTE":
-                    lblCalidadSueno.setStyle("-fx-text-fill: #2196f3;"); // Azul
+                    lblCalidadSueno.setStyle("-fx-text-fill: #2196f3;");
                     break;
                 default:
-                    lblCalidadSueno.setStyle("-fx-text-fill: #666666;"); // Gris
+                    lblCalidadSueno.setStyle("-fx-text-fill: #666666;");
                     break;
             }
+        } else {
+            lblCalidadSueno.setText("Sin datos");
+            lblCalidadSueno.setStyle("-fx-text-fill: #666666;");
         }
     }
 
@@ -356,25 +370,27 @@ public class controladorDashboard {
     private void actualizarAreasTexto(Map<String, String> datos) {
         StringBuilder alertas = new StringBuilder();
 
-        int contadorAlertas = 0;
+        // Verificar si tenemos datos de frecuencia cardíaca antes de usarlos
+        if (datos.containsKey("estadoFrecuencia") && datos.get("estadoFrecuencia") != null) {
+            String estadoFC = datos.get("estadoFrecuencia");
 
-        if ("ALERTA_BAJA".equals(datos.get("estadoFrecuencia"))) {
-            alertas.append("Frecuencia cardíaca BAJA: ").append(datos.get("frecuencia")).append(" BPM\n");
-            contadorAlertas++;
-        } else if ("ALERTA_ALTA".equals(datos.get("estadoFrecuencia"))) {
-            alertas.append("Frecuencia cardíaca ALTA: ").append(datos.get("frecuencia")).append(" BPM\n");
-            contadorAlertas++;
-        } else if ("LIMITE".equals(datos.get("estadoFrecuencia"))) {
-            alertas.append("Frecuencia cardíaca en LÍMITE: ").append(datos.get("frecuencia")).append(" BPM\n");
-            contadorAlertas++;
+            if ("ALERTA_BAJA".equals(estadoFC)) {
+                alertas.append("Frecuencia cardíaca BAJA: ").append(datos.getOrDefault("frecuencia", "--")).append(" BPM\n");
+            } else if ("ALERTA_ALTA".equals(estadoFC)) {
+                alertas.append("Frecuencia cardíaca ALTA: ").append(datos.getOrDefault("frecuencia", "--")).append(" BPM\n");
+            } else if ("LIMITE".equals(estadoFC)) {
+                alertas.append("Frecuencia cardíaca en LÍMITE: ").append(datos.getOrDefault("frecuencia", "--")).append(" BPM\n");
+            }
         }
 
-        if ("DEFICIENTE".equals(datos.get("estadoSueno"))) {
-            alertas.append("Sueño DEFICIENTE: ").append(datos.get("totalSueno")).append(" horas\n");
-            contadorAlertas++;
+        // Verificar si tenemos datos de sueño antes de usarlos
+        if (datos.containsKey("estadoSueno") && datos.get("estadoSueno") != null) {
+            if ("DEFICIENTE".equals(datos.get("estadoSueno"))) {
+                alertas.append("Sueño DEFICIENTE: ").append(datos.getOrDefault("totalSueno", "--")).append(" horas\n");
+            }
         }
 
-        if (alertas.length() == 0) {
+        if (alertas.isEmpty()) {
             alertas.append("No hay alertas críticas para este día");
         }
 
@@ -395,13 +411,15 @@ public class controladorDashboard {
     private void configurarGraficoFrecuenciaCardiaca() {
         bcharFrecCardiaca.getData().clear();
 
-        if (!validarArchivosExisten()) {
-            return;
-        }
-
         try {
-            // Obtener datos de los últimos 7 días
-            List<Map<String, String>> datosUltimos7Dias = LectorDatosSimulador.obtenerUltimos7DiasFrecuenciaCardiaca();
+            // Obtener datos de los últimos 7 días - manejar excepción si no hay datos
+            List<Map<String, String>> datosUltimos7Dias = null;
+            try {
+                datosUltimos7Dias = LectorDatosSimulador.obtenerUltimos7DiasFrecuenciaCardiaca();
+            } catch (Exception e) {
+                System.out.println("No se pudieron obtener datos para gráfico de frecuencia cardíaca: " + e.getMessage());
+                return;
+            }
 
             // Validar que se obtuvieron datos
             if (datosUltimos7Dias == null || datosUltimos7Dias.isEmpty()) {
@@ -423,12 +441,13 @@ public class controladorDashboard {
                 }
             }
 
-            bcharFrecCardiaca.getData().add(series);
-
-            bcharFrecCardiaca.setLegendVisible(false);
-            bcharFrecCardiaca.setTitle("Frecuencia Cardíaca (Últimos 7 días)");
+            if (!series.getData().isEmpty()) {
+                bcharFrecCardiaca.getData().add(series);
+                bcharFrecCardiaca.setLegendVisible(false);
+                bcharFrecCardiaca.setTitle("Frecuencia Cardíaca (Últimos 7 días)");
+            }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Error configurando gráfico de frecuencia cardíaca: " + e.getMessage());
         }
     }
 
@@ -457,12 +476,11 @@ public class controladorDashboard {
                         double spo2 = Double.parseDouble(partes[1].trim());
                         oxigenoPorFecha.put(fecha, spo2);
                     } catch (Exception e) {
-                        System.out.println("  -> Error: " + e.getMessage());
+                        System.out.println("Error al parsear línea en oxigeno.txt: " + e.getMessage());
                     }
                 }
             }
             br.close();
-
 
             // Obtener últimas 7 fechas
             List<LocalDate> fechasOrdenadas = new ArrayList<>(oxigenoPorFecha.keySet());
@@ -470,7 +488,6 @@ public class controladorDashboard {
 
             int inicio = Math.max(0, fechasOrdenadas.size() - 7);
             List<LocalDate> ultimas7 = fechasOrdenadas.subList(inicio, fechasOrdenadas.size());
-
 
             // Crear serie
             XYChart.Series<String, Number> series = new XYChart.Series<>();
@@ -481,21 +498,18 @@ public class controladorDashboard {
                 String fechaStr = fecha.format(formatter);
                 double oxigeno = oxigenoPorFecha.get(fecha);
                 series.getData().add(new XYChart.Data<>(fechaStr, oxigeno));
-
             }
-
 
             if (!series.getData().isEmpty()) {
                 bcharOxigenoSangre.getData().add(series);
                 bcharOxigenoSangre.setLegendVisible(false);
                 bcharOxigenoSangre.setTitle("Oxígeno en Sangre (Últimos 7 días)");
             } else {
-                System.out.println("✗ No hay datos para el gráfico");
+                System.out.println("No hay datos válidos para el gráfico de oxígeno");
             }
 
         } catch (Exception e) {
-            System.out.println("✗ Error: " + e.getMessage());
-            e.printStackTrace();
+            System.out.println("Error configurando gráfico de oxígeno: " + e.getMessage());
         }
     }
 
@@ -545,6 +559,20 @@ public class controladorDashboard {
                 "3. Los datos se generarán automáticamente");
 
         txtObservaciones.setText("No hay observaciones disponibles.");
+    }
+
+    private void mostrarMensajeSinDatosParaFecha(String fecha) {
+        lblNivelCardiaco.setText("--");
+        lblEstado.setText("Sin datos");
+        lblActividad.setText("-- pasos");
+        lblHorasSueno.setText("-- H");
+        lblCalidadSueno.setText("Sin datos");
+
+        txtAlertas.setText("No hay datos disponibles para la fecha: " + fecha + "\n\n" +
+                "Para generar datos:\n" +
+                "1. Ve a 'Mis Dispositivos'\n" +
+                "2. Agrega un dispositivo wearable\n" +
+                "3. Los datos se generarán automáticamente");
     }
 
     private void mostrarMensajeError() {

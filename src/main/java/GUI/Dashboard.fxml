@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="737.0" prefWidth="612.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.controladorDashboard">
+<AnchorPane prefHeight="738.0" prefWidth="642.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="GUI.controladorDashboard">
 
     <!-- Header -->
     <Label layoutX="80.0" layoutY="14.0" style="-fx-font-size: 16px; -fx-font-weight: bold;" text="Mi HealthTrack" />
@@ -30,6 +30,7 @@
             <MenuItem fx:id="menuDispositivos" mnemonicParsing="false" text="Mis Dispositivos" />
             <MenuItem fx:id="menuGestionInvitados" mnemonicParsing="false" text="Gestión Invitados" />
             <MenuItem fx:id="menuRangos" mnemonicParsing="false" text="Rangos" />
+            <MenuItem fx:id="menuReporte" mnemonicParsing="false" text="Reporte" />
             <MenuItem fx:id="menuCerrarSesion" mnemonicParsing="false" text="Cerrar Sesión" />
         </items>
     </MenuButton>
@@ -38,17 +39,17 @@
     <AnchorPane layoutX="40.0" layoutY="98.0" prefHeight="120.0" prefWidth="150.0" style="-fx-border-color: #cccccc; -fx-border-width: 3; -fx-background-color: white;">
         <Label layoutX="10.0" layoutY="10.0" style="-fx-font-weight: bold;" text="Nivel Cardíaco" />
         <Label layoutX="13.0" layoutY="41.0" style="-fx-font-size: 24px;" text="💗" />
-        <Label fx:id="lblNivelCardiaco" layoutX="48.0" layoutY="36.0" style="-fx-font-size: 32px; -fx-font-weight: bold;" text="78" />
+        <Label fx:id="lblNivelCardiaco" layoutX="48.0" layoutY="36.0" style="-fx-font-size: 32px; -fx-font-weight: bold;" text="--" />
         <Label layoutX="52.0" layoutY="75.0" style="-fx-text-fill: #666666;" text="BPM" />
       <Label layoutX="11.0" layoutY="93.0" style="-fx-text-fill: #666666;" text="Estado:" />
       <Label layoutX="63.0" layoutY="93.0" style="-fx-text-fill: #666666;" />
-      <Label fx:id="lblEstado" layoutX="76.0" layoutY="93.0" style="-fx-text-fill: #666666;" text="Normal" />
+      <Label fx:id="lblEstado" layoutX="76.0" layoutY="93.0" style="-fx-text-fill: #666666;" text="------" />
     </AnchorPane>
 
     <!-- Tarjeta 2: Actividad -->
     <AnchorPane layoutX="225.0" layoutY="98.0" prefHeight="120.0" prefWidth="150.0" style="-fx-border-color: #cccccc; -fx-border-width: 3; -fx-background-color: white;">
         <Label layoutX="10.0" layoutY="10.0" style="-fx-font-weight: bold;" text="Actividad" />
-        <Label fx:id="lblActividad" layoutX="30.0" layoutY="40.0" style="-fx-font-size: 16px;" text="🏃 10,284" />
+        <Label fx:id="lblActividad" layoutX="30.0" layoutY="40.0" style="-fx-font-size: 16px;" text="🏃 ---- " />
         <Label layoutX="10.0" layoutY="70.0" style="-fx-text-fill: #666666;" text="Pasos" />
         <Label fx:id="lblActividadRealizada" layoutX="10.0" layoutY="95.0" style="-fx-font-size: 11px;" text="Actividad">
          <font>
@@ -59,7 +60,7 @@
     <!-- Tarjeta 3: Sueño -->
     <AnchorPane layoutX="410.0" layoutY="98.0" prefHeight="120.0" prefWidth="150.0" style="-fx-border-color: #cccccc; -fx-border-width: 3; -fx-background-color: white;">
         <Label layoutX="10.0" layoutY="10.0" style="-fx-font-weight: bold;" text="Nivel de Sueño" />
-        <Label fx:id="lblHorasSueno" layoutX="30.0" layoutY="40.0" style="-fx-font-size: 16px;" text="😴 5.4 H" />
+        <Label fx:id="lblHorasSueno" layoutX="30.0" layoutY="40.0" style="-fx-font-size: 16px;" text="😴 -----" />
         <Label layoutX="10.0" layoutY="70.0" style="-fx-text-fill: #666666;" text="Sueño" />
         <Label fx:id="lblCalidadSueno" layoutX="10.0" layoutY="95.0" style="-fx-font-size: 11px; -fx-text-fill: #FF9800;" text="Regular" />
     </AnchorPane>

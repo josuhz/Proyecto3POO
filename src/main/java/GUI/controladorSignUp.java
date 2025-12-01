@@ -7,7 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-
+import org.mindrot.jbcrypt.BCrypt;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -49,10 +49,7 @@ public class controladorSignUp {
                 return;
             }
 
-            // Guardar información del usuario principal
             guardarUsuarioPrincipal();
-
-            // Ir al login
             irALogin();
 
         } catch (Exception e) {
@@ -64,12 +61,16 @@ public class controladorSignUp {
     private void guardarUsuarioPrincipal() throws IOException {
         File archivo = new File("usuario_principal.txt");
 
+        //cifrar la contraseña antes de guardarla
+        String contrasenaOriginal = txtContrasena.getText();
+        String contrasenaCifrada = BCrypt.hashpw(contrasenaOriginal, BCrypt.gensalt(12));
+
         try (PrintWriter writer = new PrintWriter(new FileWriter(archivo))) {
-            // Formato: nombre,correo,contraseña,edad,peso,altura,tipo
+            // Formato: nombre,correo,contraseña_cifrada,edad,peso,altura,tipo
             writer.println(
                     txtNombre.getText() + "," +
                             txtCorreo.getText() + "," +
-                            txtContrasena.getText() + "," +
+                            contrasenaCifrada + "," +
                             (txtEdad.getText().isEmpty() ? "0" : txtEdad.getText()) + "," +
                             (txtPeso.getText().isEmpty() ? "0" : txtPeso.getText()) + "," +
                             (txtAltura.getText().isEmpty() ? "0" : txtAltura.getText()) + "," +
@@ -98,26 +99,5 @@ public class controladorSignUp {
             e.printStackTrace();
             System.out.println("Error al cargar login: " + e.getMessage());
         }
-    }
-
-    // Método para leer la información del usuario principal desde otro archivo
-    public static String[] leerUsuarioPrincipal() {
-        try {
-            File archivo = new File("usuario_principal.txt");
-            if (!archivo.exists()) {
-                return null;
-            }
-
-            java.util.Scanner scanner = new java.util.Scanner(archivo);
-            if (scanner.hasNextLine()) {
-                String linea = scanner.nextLine();
-                scanner.close();
-                return linea.split(",");
-            }
-            scanner.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 }

@@ -145,16 +145,15 @@ public class SimuladorDatos {
         }
     }
 
+    // Métodos auxiliares para generar datos (sin cambios)
     private static int generarFrecuenciaCardiacaRealista() {
-        // 80% de probabilidad de estar en rango normal, 20% de estar fuera
         if (random.nextDouble() < 0.8) {
             return FC_NORMAL_MIN + random.nextInt(FC_NORMAL_MAX - FC_NORMAL_MIN + 1);
         } else {
-            // Fuera de rango - puede ser baja o alta
             if (random.nextBoolean()) {
-                return FC_MIN + random.nextInt(FC_ALERTA_BAJA - FC_MIN + 1); // Alerta baja
+                return FC_MIN + random.nextInt(FC_ALERTA_BAJA - FC_MIN + 1);
             } else {
-                return FC_ALERTA_ALTA + random.nextInt(FC_MAX - FC_ALERTA_ALTA + 1); // Alerta alta
+                return FC_ALERTA_ALTA + random.nextInt(FC_MAX - FC_ALERTA_ALTA + 1);
             }
         }
     }
@@ -172,24 +171,22 @@ public class SimuladorDatos {
     }
 
     private static int generarPasosRealistas() {
-        // Distribución realista: algunos días más activos, otros menos
         double probabilidad = random.nextDouble();
 
-        if (probabilidad < 0.1) { // 10% sedentario
+        if (probabilidad < 0.1) {
             return random.nextInt(PASOS_SEDENTARIO);
-        } else if (probabilidad < 0.3) { // 20% poco activo
+        } else if (probabilidad < 0.3) {
             return PASOS_SEDENTARIO + random.nextInt(PASOS_POCO_ACTIVO - PASOS_SEDENTARIO);
-        } else if (probabilidad < 0.6) { // 30% moderado
+        } else if (probabilidad < 0.6) {
             return PASOS_POCO_ACTIVO + random.nextInt(PASOS_MODERADO - PASOS_POCO_ACTIVO);
-        } else if (probabilidad < 0.85) { // 25% activo
+        } else if (probabilidad < 0.85) {
             return PASOS_MODERADO + random.nextInt(PASOS_ACTIVO - PASOS_MODERADO);
-        } else { // 15% muy activo
+        } else {
             return PASOS_ACTIVO + random.nextInt(PASOS_MAX - PASOS_ACTIVO);
         }
     }
 
     private static int generarCalorias(int pasos) {
-        // Aproximadamente 0.04 calorías por paso
         return (int)(pasos * 0.04);
     }
 
@@ -208,12 +205,12 @@ public class SimuladorDatos {
     }
 
     private static double[] generarDatosSuenoRealistas() {
-        double[] sueno = new double[3]; // [ligero, profundo, REM]
+        double[] sueno = new double[3];
         double totalHoras = SUENO_MIN + random.nextDouble() * (SUENO_MAX - SUENO_MIN);
 
-        sueno[0] = totalHoras * 0.5; // Sueño ligero
-        sueno[1] = totalHoras * 0.25; // Sueño profundo
-        sueno[2] = totalHoras * 0.25; // Sueño REM
+        sueno[0] = totalHoras * 0.5;
+        sueno[1] = totalHoras * 0.25;
+        sueno[2] = totalHoras * 0.25;
 
         return sueno;
     }
@@ -231,7 +228,6 @@ public class SimuladorDatos {
     }
 
     private static double generarOxigenoRealista() {
-        // 90% de probabilidad de estar en rango normal, 10% de estar bajo
         if (random.nextDouble() < 0.9) {
             return OXIGENO_NORMAL_MIN + random.nextDouble() * (OXIGENO_MAX - OXIGENO_NORMAL_MIN);
         } else {
@@ -250,13 +246,44 @@ public class SimuladorDatos {
     }
 
     /**
-     * Verifica y completa los datos faltantes desde la última fecha hasta hoy
+     * NUEVO MÉTODO: Solo actualiza los archivos TXT que ya existen
+     * No crea nuevos archivos
      */
+    public static void completarSoloDatosExistentes() {
+        // Verifica cada archivo individualmente y solo actualiza los que existen
+        File fcFile = new File("frecuencia_cardiaca.txt");
+        if (fcFile.exists() && fcFile.isFile()) {
+            completarFrecuenciaCardiacaFaltante();
+            System.out.println("✓ Frecuencia cardíaca actualizada");
+        }
+
+        File actividadFile = new File("actividad_fisica.txt");
+        if (actividadFile.exists() && actividadFile.isFile()) {
+            completarActividadFisicaFaltante();
+            System.out.println("✓ Actividad física actualizada");
+        }
+
+        File suenoFile = new File("sueño.txt");
+        if (suenoFile.exists() && suenoFile.isFile()) {
+            completarSuenoFaltante();
+            System.out.println("✓ Sueño actualizado");
+        }
+
+        File oxigenoFile = new File("oxigeno.txt");
+        if (oxigenoFile.exists() && oxigenoFile.isFile()) {
+            completarOxigenoFaltante();
+            System.out.println("✓ Oxígeno actualizado");
+        }
+    }
+
+    /**
+     * MÉTODO DEPRECADO: Ya no se usa
+     * Reemplazado por completarSoloDatosExistentes()
+     */
+    @Deprecated
     public static void completarDatosFaltantes() {
-        completarFrecuenciaCardiacaFaltante();
-        completarActividadFisicaFaltante();
-        completarSuenoFaltante();
-        completarOxigenoFaltante();
+        // Usar el nuevo método en su lugar
+        completarSoloDatosExistentes();
     }
 
     /**
@@ -265,8 +292,9 @@ public class SimuladorDatos {
     private static void completarFrecuenciaCardiacaFaltante() {
         try {
             File archivo = new File("frecuencia_cardiaca.txt");
+
+            // Solo procesar si el archivo existe
             if (!archivo.exists()) {
-                generarFrecuenciaCardiaca();
                 return;
             }
 
@@ -274,7 +302,6 @@ public class SimuladorDatos {
             LocalDate hoy = LocalDate.now();
 
             if (ultimaFecha.isBefore(hoy)) {
-                // Agregar datos faltantes
                 try (PrintWriter writer = new PrintWriter(new FileWriter(archivo, true))) {
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                     LocalDate fechaActual = ultimaFecha.plusDays(1);
@@ -298,8 +325,9 @@ public class SimuladorDatos {
     private static void completarActividadFisicaFaltante() {
         try {
             File archivo = new File("actividad_fisica.txt");
+
+            // Solo procesar si el archivo existe
             if (!archivo.exists()) {
-                generarActividadFisica();
                 return;
             }
 
@@ -331,8 +359,9 @@ public class SimuladorDatos {
     private static void completarSuenoFaltante() {
         try {
             File archivo = new File("sueño.txt");
+
+            // Solo procesar si el archivo existe
             if (!archivo.exists()) {
-                generarSueno();
                 return;
             }
 
@@ -375,8 +404,9 @@ public class SimuladorDatos {
     private static void completarOxigenoFaltante() {
         try {
             File archivo = new File("oxigeno.txt");
+
+            // Solo procesar si el archivo existe
             if (!archivo.exists()) {
-                generarOxigeno();
                 return;
             }
 

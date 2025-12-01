@@ -16,39 +16,87 @@ public class LectorDatosSimulador {
         String fechaStr = fecha.format(formatter);
 
         try {
-            // Leer frecuencia cardíaca
-            datos.putAll(leerFrecuenciaCardiaca(fechaStr));
-            // Leer actividad física
-            datos.putAll(leerActividadFisica(fechaStr));
-            // Leer sueño
-            datos.putAll(leerSueno(fechaStr));
+            // Leer frecuencia cardíaca si existe
+            if (new File("frecuencia_cardiaca.txt").exists()) {
+                datos.putAll(leerFrecuenciaCardiaca(fechaStr));
+            }
+            // Leer actividad física si existe
+            if (new File("actividad_fisica.txt").exists()) {
+                datos.putAll(leerActividadFisica(fechaStr));
+            }
+            // Leer sueño si existe
+            if (new File("sueño.txt").exists()) {
+                datos.putAll(leerSueno(fechaStr));
+            }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error al leer datos para fecha " + fechaStr + ": " + e.getMessage());
         }
 
         return datos;
     }
 
     public static List<LocalDate> obtenerFechasDisponibles() {
+        Set<LocalDate> fechas = new HashSet<>();
+
+        // Buscar fechas en todos los archivos que existan
+        if (new File("frecuencia_cardiaca.txt").exists()) {
+            fechas.addAll(obtenerFechasDeArchivo("frecuencia_cardiaca.txt"));
+        }
+        if (new File("actividad_fisica.txt").exists()) {
+            fechas.addAll(obtenerFechasDeArchivo("actividad_fisica.txt"));
+        }
+        if (new File("sueño.txt").exists()) {
+            fechas.addAll(obtenerFechasDeArchivo("sueño.txt"));
+        }
+        if (new File("oxigeno.txt").exists()) {
+            fechas.addAll(obtenerFechasDeArchivo("oxigeno.txt"));
+        }
+
+        List<LocalDate> listaFechas = new ArrayList<>(fechas);
+        Collections.sort(listaFechas);
+        return listaFechas;
+    }
+
+    private static List<LocalDate> obtenerFechasDeArchivo(String nombreArchivo) {
         List<LocalDate> fechas = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader("frecuencia_cardiaca.txt"))) {
+        File archivo = new File(nombreArchivo);
+
+        if (!archivo.exists()) {
+            return fechas;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
             String linea;
             while ((linea = reader.readLine()) != null) {
-                String[] partes = linea.split(",");
-                if (partes.length >= 1) {
-                    LocalDate fecha = LocalDate.parse(partes[0], formatter);
-                    fechas.add(fecha);
+                if (!linea.trim().isEmpty()) {
+                    String[] partes = linea.split(",");
+                    if (partes.length >= 1) {
+                        try {
+                            LocalDate fecha = LocalDate.parse(partes[0].trim(), formatter);
+                            fechas.add(fecha);
+                        } catch (Exception e) {
+                            System.out.println("Error al parsear fecha en " + nombreArchivo + ": " + linea);
+                        }
+                    }
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error al leer " + nombreArchivo + ": " + e.getMessage());
         }
         return fechas;
     }
 
     public static List<Map<String, String>> obtenerUltimos7DiasFrecuenciaCardiaca() {
         List<Map<String, String>> datos = new ArrayList<>();
-        List<LocalDate> fechas = obtenerFechasDisponibles();
+
+        // Si el archivo no existe, retornar lista vacía
+        File archivoFc = new File("frecuencia_cardiaca.txt");
+        if (!archivoFc.exists()) {
+            return datos;
+        }
+
+        // Obtener fechas solo de este archivo
+        List<LocalDate> fechas = obtenerFechasDeArchivo("frecuencia_cardiaca.txt");
 
         fechas.sort(LocalDate::compareTo);
         int startIndex = Math.max(0, fechas.size() - 7);
@@ -60,7 +108,7 @@ public class LectorDatosSimulador {
                 datoDia.put("fecha", fechas.get(i).format(DateTimeFormatter.ofPattern("dd/MM")));
                 datos.add(datoDia);
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println("Error al leer frecuencia cardíaca para fecha " + fechas.get(i) + ": " + e.getMessage());
             }
         }
 
@@ -84,15 +132,14 @@ public class LectorDatosSimulador {
                     try {
                         LocalDate fecha = LocalDate.parse(partes[0].trim());
                         double spo2 = Double.parseDouble(partes[1].trim());
-
                         oxigenoPorFecha.put(fecha, spo2);
                     } catch (Exception e) {
-                        System.out.println("Error al parsear línea: " + linea);
+                        System.out.println("Error al parsear línea en oxigeno.txt: " + linea);
                     }
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error al leer oxigeno.txt: " + e.getMessage());
             return resultado;
         }
 
@@ -102,10 +149,10 @@ public class LectorDatosSimulador {
         int inicio = Math.max(0, fechasOrdenadas.size() - 7);
         List<LocalDate> ultimas7Fechas = fechasOrdenadas.subList(inicio, fechasOrdenadas.size());
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM");
+        DateTimeFormatter fechaFormatter = DateTimeFormatter.ofPattern("dd/MM");
         for (LocalDate fecha : ultimas7Fechas) {
             Map<String, String> dato = new HashMap<>();
-            dato.put("fecha", fecha.format(formatter));
+            dato.put("fecha", fecha.format(fechaFormatter));
             dato.put("oxigeno", String.format("%.1f", oxigenoPorFecha.get(fecha)));
             resultado.add(dato);
         }
@@ -115,7 +162,15 @@ public class LectorDatosSimulador {
 
     public static List<Map<String, String>> obtenerUltimos7DiasActividad() {
         List<Map<String, String>> datos = new ArrayList<>();
-        List<LocalDate> fechas = obtenerFechasDisponibles();
+
+        // Si el archivo no existe, retornar lista vacía
+        File archivoAct = new File("actividad_fisica.txt");
+        if (!archivoAct.exists()) {
+            return datos;
+        }
+
+        // Obtener fechas solo de este archivo
+        List<LocalDate> fechas = obtenerFechasDeArchivo("actividad_fisica.txt");
 
         fechas.sort(LocalDate::compareTo);
         int startIndex = Math.max(0, fechas.size() - 7);
@@ -127,7 +182,7 @@ public class LectorDatosSimulador {
                 datoDia.put("fecha", fechas.get(i).format(DateTimeFormatter.ofPattern("dd/MM")));
                 datos.add(datoDia);
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println("Error al leer actividad física para fecha " + fechas.get(i) + ": " + e.getMessage());
             }
         }
 
@@ -136,7 +191,15 @@ public class LectorDatosSimulador {
 
     public static List<Map<String, String>> obtenerUltimos7DiasSueno() {
         List<Map<String, String>> datos = new ArrayList<>();
-        List<LocalDate> fechas = obtenerFechasDisponibles();
+
+        // Si el archivo no existe, retornar lista vacía
+        File archivoSueno = new File("sueño.txt");
+        if (!archivoSueno.exists()) {
+            return datos;
+        }
+
+        // Obtener fechas solo de este archivo
+        List<LocalDate> fechas = obtenerFechasDeArchivo("sueño.txt");
 
         fechas.sort(LocalDate::compareTo);
         int startIndex = Math.max(0, fechas.size() - 7);
@@ -148,7 +211,7 @@ public class LectorDatosSimulador {
                 datoDia.put("fecha", fechas.get(i).format(DateTimeFormatter.ofPattern("dd/MM")));
                 datos.add(datoDia);
             } catch (IOException e) {
-                e.printStackTrace();
+                System.out.println("Error al leer sueño para fecha " + fechas.get(i) + ": " + e.getMessage());
             }
         }
 
@@ -157,7 +220,13 @@ public class LectorDatosSimulador {
 
     private static Map<String, String> leerFrecuenciaCardiaca(String fecha) throws IOException {
         Map<String, String> datos = new HashMap<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader("frecuencia_cardiaca.txt"))) {
+        File archivo = new File("frecuencia_cardiaca.txt");
+
+        if (!archivo.exists()) {
+            return datos;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
             String linea;
             while ((linea = reader.readLine()) != null) {
                 String[] partes = linea.split(",");
@@ -173,7 +242,13 @@ public class LectorDatosSimulador {
 
     private static Map<String, String> leerActividadFisica(String fecha) throws IOException {
         Map<String, String> datos = new HashMap<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader("actividad_fisica.txt"))) {
+        File archivo = new File("actividad_fisica.txt");
+
+        if (!archivo.exists()) {
+            return datos;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
             String linea;
             while ((linea = reader.readLine()) != null) {
                 String[] partes = linea.split(",");
@@ -190,7 +265,13 @@ public class LectorDatosSimulador {
 
     private static Map<String, String> leerSueno(String fecha) throws IOException {
         Map<String, String> datos = new HashMap<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader("sueño.txt"))) {
+        File archivo = new File("sueño.txt");
+
+        if (!archivo.exists()) {
+            return datos;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
             String linea;
             while ((linea = reader.readLine()) != null) {
                 String[] partes = linea.split(",");
