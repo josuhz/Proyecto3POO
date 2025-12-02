@@ -11,9 +11,9 @@ public class ManejadorUsuarios {
 
     /**
      * Verifica las credenciales del usuario comparando el hash BCrypt
-     * @param correo Correo del usuario
-     * @param contrasena Contraseña en texto ingresada por el usuario
-     * @return true si las credenciales son correctas, false en caso contrario
+     * @param correo
+     * @param contrasena
+     * @return
      */
     public static boolean verificarCredenciales(String correo, String contrasena) {
         String[] usuario = leerUsuarioPrincipal();
@@ -40,7 +40,7 @@ public class ManejadorUsuarios {
 
     /**
      * Lee la información del usuario principal desde el archivo
-     * @return Array con los datos del usuario [nombre, correo, hash_contraseña, edad, peso, altura, tipo]
+     * @return
      */
     public static String[] leerUsuarioPrincipal() {
         try {
@@ -64,7 +64,7 @@ public class ManejadorUsuarios {
 
     /**
      * Obtiene todos los invitados del archivo
-     * @return Lista de arrays con los datos de cada invitado
+     * @return
      */
     public static List<String[]> leerInvitados() {
         List<String[]> invitados = new ArrayList<>();

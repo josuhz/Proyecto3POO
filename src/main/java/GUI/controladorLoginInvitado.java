@@ -31,12 +31,19 @@ public class controladorLoginInvitado {
     private static final Pattern EMAIL_PATTERN =
             Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
 
+    /**
+     * Metodo que se ejecuta automáticamente al cargar menú de login de invitados en el FXML
+     */
     @FXML
     public void initialize() {
         btnAccederInvitado.setOnAction(event -> accederComoInvitado());
         btnVolver.setOnAction(event -> volverALoginPrincipal());
     }
 
+    /**
+     * Metodo que se encarga de acceder al sistema de usuario.
+     * Este verifica si las credenciales del invitado se llenaron no se repiten con otro invitado ya guardado.
+     */
     private void accederComoInvitado() {
         try {
             String nombre = txtNombreInvitado.getText().trim();
@@ -107,6 +114,12 @@ public class controladorLoginInvitado {
         }
     }
 
+    /**
+     * Metodo que se encarga de guardar el nuevo invitado en un archivo.
+     * @param nombre
+     * @param correo
+     * @throws IOException
+     */
     private void guardarInvitado(String nombre, String correo) throws IOException {
         File archivo = new File("usuarios_invitados.txt");
 
@@ -124,6 +137,12 @@ public class controladorLoginInvitado {
         System.out.println("Invitado registrado exitosamente");
     }
 
+    /**
+     * Metodo que se encarga de preparar y mostrar una alerta depiendo de la acción realizada.
+     * @param titulo
+     * @param mensaje
+     * @param tipo
+     */
     private void mostrarAlerta(String titulo, String mensaje, Alert.AlertType tipo) {
         Alert alert = new Alert(tipo);
         alert.setTitle(titulo);
@@ -132,6 +151,10 @@ public class controladorLoginInvitado {
         alert.showAndWait();
     }
 
+    /**
+     * Metodo que se encarga de dirigir al usuario al menú de invitado y carga el email de este.
+     * @param correo
+     */
     private void irAMenuUsuarioInvitado(String correo) {
         try {
             String userDir = System.getProperty("user.dir");
@@ -161,6 +184,9 @@ public class controladorLoginInvitado {
         }
     }
 
+    /**
+     * Metodo que se encarga de volver la menú de login principal
+     */
     private void volverALoginPrincipal() {
         try {
             String userDir = System.getProperty("user.dir");

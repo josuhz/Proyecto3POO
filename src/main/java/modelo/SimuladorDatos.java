@@ -5,11 +5,10 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Random;
-
 public class SimuladorDatos {
     private static final Random random = new Random();
 
-    // Rangos basados en tu imagen
+    // Constantes de rangos para frecuencia cardíaca
     private static final int FC_MIN = 50;
     private static final int FC_MAX = 120;
     private static final int FC_NORMAL_MIN = 60;
@@ -17,28 +16,37 @@ public class SimuladorDatos {
     private static final int FC_ALERTA_BAJA = 55;
     private static final int FC_ALERTA_ALTA = 105;
 
+    // Constantes de rangos para pasos
     private static final int PASOS_SEDENTARIO = 5000;
     private static final int PASOS_POCO_ACTIVO = 7500;
     private static final int PASOS_MODERADO = 10000;
     private static final int PASOS_ACTIVO = 12500;
     private static final int PASOS_MAX = 20000;
 
+    // Constantes de rangos para sueño
     private static final double SUENO_META = 7.5;
     private static final double SUENO_ALERTA = 6.0;
     private static final double SUENO_MAX = 10.0;
     private static final double SUENO_MIN = 4.0;
 
-    // Rangos para oxígeno
+    // Constantes de rangos para oxígeno
     private static final double OXIGENO_MIN = 85.0;
     private static final double OXIGENO_MAX = 100.0;
     private static final double OXIGENO_NORMAL_MIN = 95.0;
     private static final double OXIGENO_ALERTA = 90.0;
 
+    /**
+     * Metodo main para ejecutar la generación de datos.
+     * @param args
+     */
     public static void main(String[] args) {
         generarDatosMes();
     }
 
-    // Método principal que genera todos los datos
+    /**
+     * Genera todos los archivos de datos de salud para los últimos 30 días.
+     * Crea archivos de frecuencia cardíaca, actividad física, sueño y oxígeno.
+     */
     public static void generarDatosMes() {
         generarFrecuenciaCardiaca();
         generarActividadFisica();
@@ -46,7 +54,10 @@ public class SimuladorDatos {
         generarOxigeno();
     }
 
-    // Métodos individuales para cada tipo de dato
+    /**
+     * Genera el archivo de frecuencia cardíaca con 30 días de datos.
+     * Elimina el archivo existente y crea uno nuevo.
+     */
     public static void generarFrecuenciaCardiaca() {
         try {
             File archivo = new File("frecuencia_cardiaca.txt");
@@ -72,6 +83,10 @@ public class SimuladorDatos {
         }
     }
 
+    /**
+     * Genera el archivo de actividad física con 30 días de datos.
+     * Elimina el archivo existente y crea uno nuevo.
+     */
     public static void generarActividadFisica() {
         try {
             File archivo = new File("actividad_fisica.txt");
@@ -98,6 +113,10 @@ public class SimuladorDatos {
         }
     }
 
+    /**
+     * Genera el archivo de sueño con 30 días de datos.
+     * Elimina el archivo existente y crea uno nuevo.
+     */
     public static void generarSueno() {
         try (PrintWriter writer = new PrintWriter(new FileWriter("sueño.txt"))) {
             LocalDate fechaInicio = LocalDate.now().minusDays(29);
@@ -109,7 +128,7 @@ public class SimuladorDatos {
                 double totalHoras = datosSueno[0] + datosSueno[1] + datosSueno[2];
                 String estadoSueno = obtenerEstadoSueno(totalHoras);
 
-                // Formatear correctamente con un solo decimal y punto como separador
+                // Formatear con un decimal y punto como separador
                 String totalHorasStr = String.format(Locale.US, "%.1f", totalHoras);
                 String ligeroStr = String.format(Locale.US, "%.1f", datosSueno[0]);
                 String profundoStr = String.format(Locale.US, "%.1f", datosSueno[1]);
@@ -127,6 +146,10 @@ public class SimuladorDatos {
         }
     }
 
+    /**
+     * Genera el archivo de oxígeno con 30 días de datos.
+     * Elimina el archivo existente y crea uno nuevo.
+     */
     public static void generarOxigeno() {
         try (PrintWriter writer = new PrintWriter(new FileWriter("oxigeno.txt"))) {
             LocalDate fechaInicio = LocalDate.now().minusDays(29);
@@ -145,7 +168,10 @@ public class SimuladorDatos {
         }
     }
 
-    // Métodos auxiliares para generar datos (sin cambios)
+    /**
+     * Genera una frecuencia cardíaca realista.
+     * @return
+     */
     private static int generarFrecuenciaCardiacaRealista() {
         if (random.nextDouble() < 0.8) {
             return FC_NORMAL_MIN + random.nextInt(FC_NORMAL_MAX - FC_NORMAL_MIN + 1);
@@ -158,6 +184,11 @@ public class SimuladorDatos {
         }
     }
 
+    /**
+     * Determina el estado de la frecuencia cardíaca.
+     * @param frecuencia
+     * @return
+     */
     private static String obtenerEstadoFrecuenciaCardiaca(int frecuencia) {
         if (frecuencia < FC_ALERTA_BAJA) {
             return "ALERTA_BAJA";
@@ -170,6 +201,10 @@ public class SimuladorDatos {
         }
     }
 
+    /**
+     * Genera un número de pasos realista con distribución probabilística.
+     * @return
+     */
     private static int generarPasosRealistas() {
         double probabilidad = random.nextDouble();
 
@@ -186,10 +221,20 @@ public class SimuladorDatos {
         }
     }
 
+    /**
+     * Calcula las calorías quemadas basándose en los pasos.
+     * @param pasos
+     * @return
+     */
     private static int generarCalorias(int pasos) {
         return (int)(pasos * 0.04);
     }
 
+    /**
+     * Determina el nivel de actividad física según los pasos.
+     * @param pasos
+     * @return
+     */
     private static String obtenerNivelActividad(int pasos) {
         if (pasos < PASOS_SEDENTARIO) {
             return "SEDENTARIO";
@@ -204,17 +249,26 @@ public class SimuladorDatos {
         }
     }
 
+    /**
+     * Genera datos de sueño realistas distribuidos en fases.
+     * @return
+     */
     private static double[] generarDatosSuenoRealistas() {
         double[] sueno = new double[3];
         double totalHoras = SUENO_MIN + random.nextDouble() * (SUENO_MAX - SUENO_MIN);
 
-        sueno[0] = totalHoras * 0.5;
-        sueno[1] = totalHoras * 0.25;
-        sueno[2] = totalHoras * 0.25;
+        sueno[0] = totalHoras * 0.5;  // 50% sueño ligero
+        sueno[1] = totalHoras * 0.25; // 25% sueño profundo
+        sueno[2] = totalHoras * 0.25; // 25% REM
 
         return sueno;
     }
 
+    /**
+     * Determina el estado de calidad del sueño según las horas dormidas.
+     * @param horas
+     * @return
+     */
     private static String obtenerEstadoSueno(double horas) {
         if (horas < 5.0) {
             return "DEFICIENTE";
@@ -227,6 +281,10 @@ public class SimuladorDatos {
         }
     }
 
+    /**
+     * Genera un nivel de oxígeno en sangre realista.
+     * @return
+     */
     private static double generarOxigenoRealista() {
         if (random.nextDouble() < 0.9) {
             return OXIGENO_NORMAL_MIN + random.nextDouble() * (OXIGENO_MAX - OXIGENO_NORMAL_MIN);
@@ -235,6 +293,11 @@ public class SimuladorDatos {
         }
     }
 
+    /**
+     * Determina el estado del nivel de oxígeno en sangre.
+     * @param spo2
+     * @return
+     */
     private static String obtenerEstadoOxigeno(double spo2) {
         if (spo2 >= OXIGENO_NORMAL_MIN) {
             return "NORMAL";
@@ -246,11 +309,10 @@ public class SimuladorDatos {
     }
 
     /**
-     * NUEVO MÉTODO: Solo actualiza los archivos TXT que ya existen
-     * No crea nuevos archivos
+     * Actualiza solo los archivos de datos que ya existen.
+     * Verifica la existencia de cada archivo antes de procesarlo.
      */
     public static void completarSoloDatosExistentes() {
-        // Verifica cada archivo individualmente y solo actualiza los que existen
         File fcFile = new File("frecuencia_cardiaca.txt");
         if (fcFile.exists() && fcFile.isFile()) {
             completarFrecuenciaCardiacaFaltante();
@@ -277,23 +339,21 @@ public class SimuladorDatos {
     }
 
     /**
-     * MÉTODO DEPRECADO: Ya no se usa
-     * Reemplazado por completarSoloDatosExistentes()
+     * Metodo deprecado. Usar completarSoloDatosExistentes() en su lugar.
      */
     @Deprecated
     public static void completarDatosFaltantes() {
-        // Usar el nuevo método en su lugar
         completarSoloDatosExistentes();
     }
 
     /**
-     * Completa datos de frecuencia cardíaca faltantes
+     * Completa datos de frecuencia cardíaca faltantes desde la última fecha registrada hasta hoy.
+     * Solo procesa si el archivo ya existe.
      */
     private static void completarFrecuenciaCardiacaFaltante() {
         try {
             File archivo = new File("frecuencia_cardiaca.txt");
 
-            // Solo procesar si el archivo existe
             if (!archivo.exists()) {
                 return;
             }
@@ -320,13 +380,13 @@ public class SimuladorDatos {
     }
 
     /**
-     * Completa datos de actividad física faltantes
+     * Completa datos de actividad física faltantes desde la última fecha registrada hasta hoy.
+     * Solo procesa si el archivo ya existe.
      */
     private static void completarActividadFisicaFaltante() {
         try {
             File archivo = new File("actividad_fisica.txt");
 
-            // Solo procesar si el archivo existe
             if (!archivo.exists()) {
                 return;
             }
@@ -354,13 +414,13 @@ public class SimuladorDatos {
     }
 
     /**
-     * Completa datos de sueño faltantes
+     * Completa datos de sueño faltantes desde la última fecha registrada hasta hoy.
+     * Solo procesa si el archivo ya existe.
      */
     private static void completarSuenoFaltante() {
         try {
             File archivo = new File("sueño.txt");
 
-            // Solo procesar si el archivo existe
             if (!archivo.exists()) {
                 return;
             }
@@ -399,13 +459,13 @@ public class SimuladorDatos {
     }
 
     /**
-     * Completa datos de oxígeno faltantes
+     * Completa datos de oxígeno faltantes desde la última fecha registrada hasta hoy.
+     * Solo procesa si el archivo ya existe.
      */
     private static void completarOxigenoFaltante() {
         try {
             File archivo = new File("oxigeno.txt");
 
-            // Solo procesar si el archivo existe
             if (!archivo.exists()) {
                 return;
             }
@@ -433,7 +493,10 @@ public class SimuladorDatos {
     }
 
     /**
-     * Obtiene la última fecha del archivo
+     * Obtiene la última fecha registrada en un archivo de datos.
+     * Lee el archivo línea por línea hasta encontrar la última entrada válida.
+     * @param archivo
+     * @return
      */
     private static LocalDate obtenerUltimaFechaArchivo(File archivo) {
         LocalDate ultimaFecha = LocalDate.now().minusDays(30);
@@ -463,7 +526,9 @@ public class SimuladorDatos {
     }
 
     /**
-     * Verifica si hay dispositivos vinculados (para determinar si generar datos)
+     * Verifica si hay dispositivos vinculados en el sistema.
+     * Verifica la existencia y tamaño del archivo de dispositivos.
+     * @return
      */
     public static boolean hayDispositivosVinculados() {
         File archivoDispositivos = new File("dispositivos.dat");

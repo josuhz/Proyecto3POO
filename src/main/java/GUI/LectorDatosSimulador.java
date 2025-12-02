@@ -7,10 +7,15 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-
 public class LectorDatosSimulador {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+    /**
+     * Lee todos los datos de salud disponibles para una fecha específica.
+     * Busca información en los archivos de frecuencia cardíaca, actividad física y sueño.
+     * @param fecha
+     * @return
+     */
     public static Map<String, String> leerDatosPorFecha(LocalDate fecha) {
         Map<String, String> datos = new HashMap<>();
         String fechaStr = fecha.format(formatter);
@@ -35,6 +40,10 @@ public class LectorDatosSimulador {
         return datos;
     }
 
+    /**
+     * Obtiene todas las fechas que tienen datos registrados.
+     * @return
+     */
     public static List<LocalDate> obtenerFechasDisponibles() {
         Set<LocalDate> fechas = new HashSet<>();
 
@@ -57,6 +66,11 @@ public class LectorDatosSimulador {
         return listaFechas;
     }
 
+    /**
+     * Extrae todas las fechas presentes en un archivo específico.
+     * @param nombreArchivo
+     * @return
+     */
     private static List<LocalDate> obtenerFechasDeArchivo(String nombreArchivo) {
         List<LocalDate> fechas = new ArrayList<>();
         File archivo = new File(nombreArchivo);
@@ -86,18 +100,20 @@ public class LectorDatosSimulador {
         return fechas;
     }
 
+    /**
+     * Obtiene los datos de frecuencia cardíaca de los últimos 7 días.
+     * Incluye la frecuencia en BPM y el estado.
+     * @return
+     */
     public static List<Map<String, String>> obtenerUltimos7DiasFrecuenciaCardiaca() {
         List<Map<String, String>> datos = new ArrayList<>();
 
-        // Si el archivo no existe, retornar lista vacía
         File archivoFc = new File("frecuencia_cardiaca.txt");
         if (!archivoFc.exists()) {
             return datos;
         }
 
-        // Obtener fechas solo de este archivo
         List<LocalDate> fechas = obtenerFechasDeArchivo("frecuencia_cardiaca.txt");
-
         fechas.sort(LocalDate::compareTo);
         int startIndex = Math.max(0, fechas.size() - 7);
 
@@ -115,6 +131,11 @@ public class LectorDatosSimulador {
         return datos;
     }
 
+    /**
+     * Obtiene los datos de oxígeno en sangre de los últimos 7 días.
+     * Lee el archivo oxigeno.txt y extrae los valores de SpO2.
+     * @return
+     */
     public static List<Map<String, String>> obtenerUltimos7DiasOxigeno() {
         List<Map<String, String>> resultado = new ArrayList<>();
         Map<LocalDate, Double> oxigenoPorFecha = new TreeMap<>();
@@ -160,18 +181,20 @@ public class LectorDatosSimulador {
         return resultado;
     }
 
+    /**
+     * Obtiene los datos de actividad física de los últimos 7 días.
+     * Incluye pasos, calorías y nivel de actividad.
+     * @return
+     */
     public static List<Map<String, String>> obtenerUltimos7DiasActividad() {
         List<Map<String, String>> datos = new ArrayList<>();
 
-        // Si el archivo no existe, retornar lista vacía
         File archivoAct = new File("actividad_fisica.txt");
         if (!archivoAct.exists()) {
             return datos;
         }
 
-        // Obtener fechas solo de este archivo
         List<LocalDate> fechas = obtenerFechasDeArchivo("actividad_fisica.txt");
-
         fechas.sort(LocalDate::compareTo);
         int startIndex = Math.max(0, fechas.size() - 7);
 
@@ -189,18 +212,20 @@ public class LectorDatosSimulador {
         return datos;
     }
 
+    /**
+     * Obtiene los datos de sueño de los últimos 7 días.
+     * Incluye total de horas, fases de sueño (ligero, profundo, REM) y estado.
+     * @return
+     */
     public static List<Map<String, String>> obtenerUltimos7DiasSueno() {
         List<Map<String, String>> datos = new ArrayList<>();
 
-        // Si el archivo no existe, retornar lista vacía
         File archivoSueno = new File("sueño.txt");
         if (!archivoSueno.exists()) {
             return datos;
         }
 
-        // Obtener fechas solo de este archivo
         List<LocalDate> fechas = obtenerFechasDeArchivo("sueño.txt");
-
         fechas.sort(LocalDate::compareTo);
         int startIndex = Math.max(0, fechas.size() - 7);
 
@@ -218,6 +243,11 @@ public class LectorDatosSimulador {
         return datos;
     }
 
+    /**
+     * Lee los datos de frecuencia cardíaca de una fecha específica.
+     * @param fecha
+     * @return
+     */
     private static Map<String, String> leerFrecuenciaCardiaca(String fecha) throws IOException {
         Map<String, String> datos = new HashMap<>();
         File archivo = new File("frecuencia_cardiaca.txt");
@@ -240,6 +270,11 @@ public class LectorDatosSimulador {
         return datos;
     }
 
+    /**
+     * Lee los datos de actividad física de una fecha específica.
+     * @param fecha
+     * @return
+     */
     private static Map<String, String> leerActividadFisica(String fecha) throws IOException {
         Map<String, String> datos = new HashMap<>();
         File archivo = new File("actividad_fisica.txt");
@@ -263,6 +298,11 @@ public class LectorDatosSimulador {
         return datos;
     }
 
+    /**
+     * Lee los datos de sueño de una fecha específica.
+     * @param fecha
+     * @return
+     */
     private static Map<String, String> leerSueno(String fecha) throws IOException {
         Map<String, String> datos = new HashMap<>();
         File archivo = new File("sueño.txt");

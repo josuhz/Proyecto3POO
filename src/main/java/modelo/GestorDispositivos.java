@@ -12,11 +12,19 @@ public class GestorDispositivos {
     private int contadorPulsera = 1;
     private int contadorOximetro = 1;
 
+    /**
+     * Constructor privado para implementar el patrón Singleton.
+     * Inicializa la lista de dispositivos y carga los datos guardados.
+     */
     private GestorDispositivos() {
         this.dispositivos = new ArrayList<>();
         cargarDispositivos();
     }
 
+    /**
+     * Obtiene la instancia única del gestor de dispositivos.
+     * @return
+     */
     public static GestorDispositivos getInstancia() {
         if (instancia == null) {
             instancia = new GestorDispositivos();
@@ -24,6 +32,11 @@ public class GestorDispositivos {
         return instancia;
     }
 
+    /**
+     * Agrega un nuevo dispositivo a la lista si no existe.
+     * @param dispositivo
+     * @return
+     */
     public boolean agregarDispositivo(DispositivoWearable dispositivo) {
         if (dispositivo != null && !existeDispositivo(dispositivo.getIdDispositivo())) {
             dispositivos.add(dispositivo);
@@ -32,10 +45,21 @@ public class GestorDispositivos {
         return false;
     }
 
+    /**
+     * Elimina un dispositivo de la lista por su ID.
+     * @param idDispositivo
+     * @return
+     */
     public boolean eliminarDispositivo(String idDispositivo) {
         return dispositivos.removeIf(d -> d.getIdDispositivo().equals(idDispositivo));
     }
 
+    /**
+     * Sincroniza los datos de todos los dispositivos activos.
+     * Solo sincroniza dispositivos que estén marcados como activos.
+     * @param usuarioId
+     * @return
+     */
     public List<Metrica> sincronizarTodos(String usuarioId) {
         List<Metrica> todasMetricas = new ArrayList<>();
         for (DispositivoWearable dispositivo : dispositivos) {
@@ -46,6 +70,11 @@ public class GestorDispositivos {
         return todasMetricas;
     }
 
+    /**
+     * Verifica si un dispositivo con el ID dado ya existe.
+     * @param idDispositivo
+     * @return
+     */
     private boolean existeDispositivo(String idDispositivo) {
         for (DispositivoWearable d : dispositivos) {
             if (d.getIdDispositivo().equals(idDispositivo)) {
@@ -55,14 +84,27 @@ public class GestorDispositivos {
         return false;
     }
 
+    /**
+     * Obtiene una copia de la lista de dispositivos.
+     * @return
+     */
     public List<DispositivoWearable> getDispositivos() {
         return new ArrayList<>(dispositivos);
     }
 
+    /**
+     * Obtiene la cantidad total de dispositivos registrados.
+     * @return
+     */
     public int getCantidadDispositivos() {
         return dispositivos.size();
     }
 
+    /**
+     * Busca un dispositivo específico por su ID.
+     * @param idDispositivo
+     * @return
+     */
     public DispositivoWearable buscarDispositivo(String idDispositivo) {
         for (DispositivoWearable d : dispositivos) {
             if (d.getIdDispositivo().equals(idDispositivo)) {
@@ -72,6 +114,10 @@ public class GestorDispositivos {
         return null;
     }
 
+    /**
+     * Guarda todos los dispositivos en un archivo binario.
+     * Serializa la lista completa de dispositivos en dispositivos.dat
+     */
     public void guardarDispositivos() {
         try (ObjectOutputStream oos = new ObjectOutputStream(
                 new FileOutputStream(ARCHIVO_DISPOSITIVOS))) {
@@ -81,6 +127,9 @@ public class GestorDispositivos {
         }
     }
 
+    /**
+     * Carga los dispositivos desde el archivo.
+     */
     @SuppressWarnings("unchecked")
     public void cargarDispositivos() {
         File archivo = new File(ARCHIVO_DISPOSITIVOS);
@@ -98,6 +147,9 @@ public class GestorDispositivos {
         }
     }
 
+    /**
+     * Actualiza los contadores de IDs basándose en los dispositivos existentes.
+     */
     private void actualizarContadores() {
         contadorSmartWatch = 0;
         contadorPulsera = 0;
@@ -122,14 +174,58 @@ public class GestorDispositivos {
         contadorOximetro++;
     }
 
-    public int getContadorSmartWatch() { return contadorSmartWatch; }
-    public int getContadorPulsera() { return contadorPulsera; }
-    public int getContadorOximetro() { return contadorOximetro; }
+    /**
+     * Obtiene el contador actual de SmartWatch.
+     * @return
+     */
+    public int getContadorSmartWatch() {
+        return contadorSmartWatch;
+    }
 
-    public void setContadorSmartWatch(int valor) { this.contadorSmartWatch = valor; }
-    public void setContadorPulsera(int valor) { this.contadorPulsera = valor; }
-    public void setContadorOximetro(int valor) { this.contadorOximetro = valor; }
+    /**
+     * Obtiene el contador actual de Pulsera.
+     * @return
+     */
+    public int getContadorPulsera() {
+        return contadorPulsera;
+    }
 
+    /**
+     * Obtiene el contador actual de Oxímetro.
+     * @return
+     */
+    public int getContadorOximetro() {
+        return contadorOximetro;
+    }
+
+    /**
+     * Establece manualmente el contador de SmartWatch.
+     * @param valor
+     */
+    public void setContadorSmartWatch(int valor) {
+        this.contadorSmartWatch = valor;
+    }
+
+    /**
+     * Establece manualmente el contador de Pulsera.
+     * @param valor
+     */
+    public void setContadorPulsera(int valor) {
+        this.contadorPulsera = valor;
+    }
+
+    /**
+     * Establece manualmente el contador de Oxímetro.
+     * @param valor
+     */
+    public void setContadorOximetro(int valor) {
+        this.contadorOximetro = valor;
+    }
+
+    /**
+     * Elimina todos los dispositivos y guarda el estado vacío.
+     * Limpia completamente la lista de dispositivos.
+     */
     public void limpiarTodo() {
         dispositivos.clear();
         guardarDispositivos();

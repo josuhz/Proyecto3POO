@@ -7,6 +7,14 @@ public class MetricaSueno extends Metrica implements Serializable {
     private int calidadSueno;
     private int fasesREM;
 
+    /**
+     * Constructor para crear una métrica de sueño.
+     * @param dispositivoOrigen
+     * @param usuarioId
+     * @param horasDormidas
+     * @param calidadSueno
+     * @param fasesREM
+     */
     public MetricaSueno(String dispositivoOrigen, String usuarioId,
                         double horasDormidas, int calidadSueno, int fasesREM) {
         super(dispositivoOrigen, usuarioId);
@@ -15,6 +23,10 @@ public class MetricaSueno extends Metrica implements Serializable {
         this.fasesREM = fasesREM;
     }
 
+    /**
+     * Calcula el indicador de calidad del sueño.
+     * @return
+     */
     @Override
     public double calcularIndicador() {
         double indicadorHoras;
@@ -28,12 +40,36 @@ public class MetricaSueno extends Metrica implements Serializable {
         return (indicadorHoras * 0.6) + (calidadSueno * 0.4);
     }
 
+    /**
+     * Obtiene el tipo de métrica.
+     * @return
+     */
     @Override
     public String getTipo() {
         return "Sueño";
     }
 
-    public double getHorasSueno() { return horasDormidas; }
-    public int getCalidadSueno() { return calidadSueno; }
-    public int getFasesREM() { return fasesREM; }
+    /**
+     * Obtiene las horas de sueño registradas.
+     * @return
+     */
+    public double getHorasSueno() {
+        return horasDormidas;
+    }
+
+    /**
+     * Obtiene la calidad del sueño.
+     * @return
+     */
+    public int getCalidadSueno() {
+        return calidadSueno;
+    }
+
+    /**
+     * Obtiene el número de fases REM.
+     * @return
+     */
+    public int getFasesREM() {
+        return fasesREM;
+    }
 }

@@ -68,6 +68,9 @@ public class controladorDashboard {
 
     private DateTimeFormatter displayFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
+    /**
+     * Metodo que se ejecuta automáticamente al cargar el dashboard en el FXML
+     */
     @FXML
     public void initialize() {
         menuDashboard.setOnAction(event -> irAVentana("Dashboard.fxml", "Dashboard"));
@@ -87,6 +90,9 @@ public class controladorDashboard {
         configurarGraficoOxigenoSangre();
     }
 
+    /**
+     * Metodo que se encarga de leer y cargar el nombre del usuario que se registra para mostrarlo en pantalla.
+     */
     private void cargarNombreUsuario() {
         try {
             String[] usuario = ManejadorUsuarios.leerUsuarioPrincipal();
@@ -100,6 +106,9 @@ public class controladorDashboard {
         }
     }
 
+    /**
+     * Metedo que se encarga de mostrar en un choicebox las fechas disponibles para visualizar.
+     */
     private void configurarChoiceBoxFechas() {
         // Obtener fechas disponibles del simulador (manejar null si no hay datos)
         List<LocalDate> fechas = new ArrayList<>();
@@ -140,6 +149,9 @@ public class controladorDashboard {
         });
     }
 
+    /**
+     * Metodo que se encarga de cargar la visualización de los datos de la fecha inicial.
+     */
     private void cargarDatosIniciales() {
         String fechaSeleccionada = chbFechas.getValue();
         if (fechaSeleccionada != null && !fechaSeleccionada.equals("No hay datos")) {
@@ -149,6 +161,10 @@ public class controladorDashboard {
         }
     }
 
+    /**
+     * Metodo que se encarga de cargar la visualización de los datos por la fecha seleccionada.
+     * @param fechaDisplay
+     */
     private void cargarDatosPorFecha(String fechaDisplay) {
         try {
             LocalDate fecha = LocalDate.parse(fechaDisplay, displayFormatter);
@@ -179,6 +195,11 @@ public class controladorDashboard {
         }
     }
 
+    /**
+     * Metedo que se encarga de estar actualizando la información que se muestra en los labels del Dashboard.
+     * Estos pueden cambiar de color dependiendo del estado.
+     * @param datos
+     */
     private void actualizarLabels(Map<String, String> datos) {
         if (datos.containsKey("frecuencia") && datos.get("frecuencia") != null) {
             lblNivelCardiaco.setText(datos.get("frecuencia"));
@@ -291,6 +312,11 @@ public class controladorDashboard {
         }
     }
 
+    /**
+     * Metodo que se encarga de convertir la alerta de frecuencia cardíaca a un string para visulizarlo en el Dashboard.
+     * @param estadoFC
+     * @return
+     */
     private String convertirEstadoFC(String estadoFC) {
         switch (estadoFC) {
             case "ALERTA_BAJA": return "Alerta Baja";
@@ -301,6 +327,11 @@ public class controladorDashboard {
         }
     }
 
+    /**
+     * Metodo que se encarga de convertir la alerta de calidad de sueño a un string para visulizarlo en el Dashboard.
+     * @param estadoSueno
+     * @return
+     */
     private String convertirEstadoSueno(String estadoSueno) {
         switch (estadoSueno) {
             case "DEFICIENTE": return "Deficiente";
@@ -314,6 +345,9 @@ public class controladorDashboard {
         }
     }
 
+    /**
+     * Metodo que se encarga de cargar los comentarios que han enviado los invitados para mostarlos en campo de texto.
+     */
     private void cargarComentariosInvitados() {
         File archivo = new File("comentarios.txt");
 
@@ -367,6 +401,11 @@ public class controladorDashboard {
         }
     }
 
+    /**
+     * Metodo que se encarga de actualizar las areas de texto con los datos que se actulizan.
+     * Verifica cada uno de los datos y los carga para la visualización.
+     * @param datos
+     */
     private void actualizarAreasTexto(Map<String, String> datos) {
         StringBuilder alertas = new StringBuilder();
 
@@ -397,6 +436,11 @@ public class controladorDashboard {
         txtAlertas.setText(alertas.toString());
     }
 
+    /**
+     * Metodo que se encarga de convertir la alerta de actividad física en texto para mostrarlo en el Dashboard.
+     * @param nivelActividad
+     * @return
+     */
     private String convertirNivelActividad(String nivelActividad) {
         switch (nivelActividad) {
             case "SEDENTARIO": return "Sedentario";
@@ -408,6 +452,9 @@ public class controladorDashboard {
         }
     }
 
+    /**
+     * Metodo que se encarga de preparar el gráfico de la frecuencia cardíaca con los datos que han sido obtenidos en los días anteriores.
+     */
     private void configurarGraficoFrecuenciaCardiaca() {
         bcharFrecCardiaca.getData().clear();
 
@@ -451,6 +498,9 @@ public class controladorDashboard {
         }
     }
 
+    /**
+     * Metodo que se encarga de preparar el gráfico de los niveles de oxigeno en la sangre con los datos que han sido obtenidos en los días anteriores.
+     */
     private void configurarGraficoOxigenoSangre() {
         bcharOxigenoSangre.getData().clear();
 
@@ -513,6 +563,11 @@ public class controladorDashboard {
         }
     }
 
+    /**
+     * Metodo que se encarga de pasar al siguiente menú dependiendo de cual se seleccione de un MenuButton.
+     * @param nombreArchivo
+     * @param titulo
+     */
     private void irAVentana(String nombreArchivo, String titulo) {
         try {
             String userDir = System.getProperty("user.dir");
@@ -529,6 +584,9 @@ public class controladorDashboard {
         }
     }
 
+    /**
+     * Metodo que se encarga de volver al menú de login para volver a iniciar sesión.
+     */
     private void cerrarSesion() {
         try {
             String userDir = System.getProperty("user.dir");
@@ -545,6 +603,9 @@ public class controladorDashboard {
         }
     }
 
+    /**
+     * Metodo que se encarga de mostrar los mensajes de cada label en caso de no haber ningún dato.
+     */
     private void mostrarMensajeSinDatos() {
         lblNivelCardiaco.setText("--");
         lblEstado.setText("Sin datos");
@@ -561,6 +622,10 @@ public class controladorDashboard {
         txtObservaciones.setText("No hay observaciones disponibles.");
     }
 
+    /**
+     * Metodo que se encarga de mostrar los mensajes de cada label en caso de que en la fecha seleccionada no se encuentre ningún dato.
+     * @param fecha
+     */
     private void mostrarMensajeSinDatosParaFecha(String fecha) {
         lblNivelCardiaco.setText("--");
         lblEstado.setText("Sin datos");
@@ -575,6 +640,9 @@ public class controladorDashboard {
                 "3. Los datos se generarán automáticamente");
     }
 
+    /**
+     * Metodo que se encarga de crear una alerta en caso de que ocurra un error.
+     */
     private void mostrarMensajeError() {
         txtAlertas.setText("Error al cargar los datos.\n" +
                 "Por favor, verifica que los archivos de datos estén correctamente generados.");

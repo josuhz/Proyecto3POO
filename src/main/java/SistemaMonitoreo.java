@@ -7,10 +7,15 @@ import java.io.File;
 
 public class SistemaMonitoreo extends Application {
 
+    /**
+     * Metodo de inicio de la aplicación JavaFX.
+     * Verifica si existe un usuario principal registrado
+     * @param primaryStage
+     */
     @Override
     public void start(Stage primaryStage) {
         try {
-
+            // Verificar si existe el archivo de usuario principal
             File archivoUsuario = new File("usuario_principal.txt");
 
             if (archivoUsuario.exists()) {
@@ -25,6 +30,11 @@ public class SistemaMonitoreo extends Application {
         }
     }
 
+    /**
+     * Carga la pantalla de registro (Sign Up) para crear un nuevo usuario principal.
+     * @param primaryStage
+     * @throws Exception
+     */
     private void cargarSignUp(Stage primaryStage) throws Exception {
         String userDir = System.getProperty("user.dir");
         File fxmlFile = new File(userDir, "src/main/java/GUI/menuSignUp.fxml");
@@ -37,6 +47,11 @@ public class SistemaMonitoreo extends Application {
         primaryStage.show();
     }
 
+    /**
+     * Carga la pantalla de inicio de sesión (Login) para usuarios existentes.
+     * @param primaryStage
+     * @throws Exception
+     */
     private void cargarLogin(Stage primaryStage) throws Exception {
         String userDir = System.getProperty("user.dir");
         File fxmlFile = new File(userDir, "src/main/java/GUI/menuLogin.fxml");
@@ -49,6 +64,10 @@ public class SistemaMonitoreo extends Application {
         primaryStage.show();
     }
 
+    /**
+     * Metodo principal que inicia la aplicación JavaFX.
+     * @param args
+     */
     public static void main(String[] args) {
         launch(args);
     }

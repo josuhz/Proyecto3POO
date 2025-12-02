@@ -29,6 +29,9 @@ public class controladorLogin {
     @FXML
     private Hyperlink enlaceInvitado;
 
+    /**
+     * Metodo que se ejecuta automáticamente al cargar menú de login en el FXML
+     */
     @FXML
     public void initialize() {
         btnIniciarSesion.setOnAction(event -> irADashboard(event));
@@ -38,6 +41,11 @@ public class controladorLogin {
         }
     }
 
+    /**
+     * Metodo que se encarga enviar al usuario al menú del dashboard.
+     * Este verifica si las credenciales del usuario se llenaron y coinciden con algún usurio guardado.
+     * @param event
+     */
     @FXML
     private void irADashboard(ActionEvent event) {
         try {
@@ -77,6 +85,11 @@ public class controladorLogin {
         }
     }
 
+    /**
+     * Metodo que se encarga enviar al usuario al menú del de invitado.
+     * Este verifica si el usuario elige la opción de ingresar como invitado.
+     * @param event
+     */
     @FXML
     private void irALoginInvitado(ActionEvent event) {
         try {

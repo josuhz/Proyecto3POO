@@ -33,12 +33,18 @@ public class controladorRangos {
     @FXML
     private MenuItem menuCerrarSesion;
 
+    /**
+     * Metodo que se ejecuta automáticamente al ingresar al menu de rangos en el FXML.
+     */
     @FXML
     public void initialize() {
         // Configurar eventos del menú de navegación
         configurarEventosMenu();
     }
 
+    /**
+     * Configura las opciones de los eventos posibles para cambiar de menú.
+     */
     private void configurarEventosMenu() {
         menuDashboard.setOnAction(event -> irAVentana("Dashboard.fxml", "Dashboard"));
         menuDispositivos.setOnAction(event -> irAVentana("menuDispositivos.fxml", "Mis Dispositivos"));
@@ -119,14 +125,14 @@ public class controladorRangos {
     // Métodos utilitarios para los rangos (si los necesitas)
 
     /**
-     * Método para validar frecuencia cardíaca
+     * Metodo para validar frecuencia cardíaca
      */
     public boolean esFrecuenciaCardiacaNormal(int bpm) {
         return bpm >= 60 && bpm <= 100;
     }
 
     /**
-     * Método para evaluar nivel de actividad
+     * Metodo para evaluar nivel de actividad
      */
     public String evaluarNivelActividad(int pasos) {
         if (pasos < 5000) return "Sedentario";
@@ -137,7 +143,7 @@ public class controladorRangos {
     }
 
     /**
-     * Método para evaluar calidad de sueño
+     * Metodo para evaluar calidad de sueño
      */
     public String evaluarCalidadSueno(double horas) {
         if (horas < 6) return "Insuficiente";

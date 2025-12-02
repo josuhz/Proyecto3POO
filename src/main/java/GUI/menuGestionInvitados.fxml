@@ -43,7 +43,7 @@
                 <Insets left="15.0" />
             </padding>
             <children>
-                <Text fill="#0066CC" strokeType="OUTSIDE" strokeWidth="0.0" text="Personas con Acceso a Mis Datos (0)">
+                <Text fill="#0066CC" strokeType="OUTSIDE" strokeWidth="0.0" text="Personas con Acceso a Mis Datos:">
                     <font>
                         <Font name="System Bold" size="13.0" />
                     </font>
@@ -53,7 +53,7 @@
 
         <!-- Botones debajo del TextArea -->
         <HBox alignment="CENTER" layoutX="12.0" layoutY="671.0" prefHeight="40.0" prefWidth="540.0" spacing="15.0" />
-        <ImageView fitHeight="24.0" fitWidth="25.0" layoutX="148.0" layoutY="95.0" pickOnBounds="true" preserveRatio="true">
+        <ImageView fitHeight="24.0" fitWidth="25.0" layoutX="152.0" layoutY="95.0" pickOnBounds="true" preserveRatio="true">
             <image>
                 <Image url="@/imagenes/icono_personas2.png" />
             </image>
@@ -79,7 +79,7 @@
          <font>
             <Font name="System Bold" size="18.0" />
          </font></CheckBox>
-        <CheckBox fx:id="chkOxigeno" layoutX="271" layoutY="555" mnemonicParsing="false"  text="Oxígeno en Sangre" textFill="#00ab00">
+        <CheckBox fx:id="chkOxigeno" layoutX="271" layoutY="555" mnemonicParsing="false" text="Oxígeno en Sangre" textFill="#00ab00">
           <font>
             <Font name="System Bold" size="18.0" />
           </font></CheckBox>

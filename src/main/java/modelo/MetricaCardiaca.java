@@ -2,11 +2,17 @@ package modelo;
 
 import java.io.Serializable;
 
-
 public class MetricaCardiaca extends Metrica implements Serializable {
     private int frecuenciaCardiaca;
     private double variabilidadCardiaca;
 
+    /**
+     * Constructor para crear una métrica cardíaca.
+     * @param dispositivoOrigen
+     * @param usuarioId
+     * @param frecuenciaCardiaca
+     * @param variabilidadCardiaca
+     */
     public MetricaCardiaca(String dispositivoOrigen, String usuarioId,
                            int frecuenciaCardiaca, double variabilidadCardiaca) {
         super(dispositivoOrigen, usuarioId);
@@ -14,6 +20,10 @@ public class MetricaCardiaca extends Metrica implements Serializable {
         this.variabilidadCardiaca = variabilidadCardiaca;
     }
 
+    /**
+     * Calcula el indicador de salud cardíaca basado en la frecuencia.
+     * @return
+     */
     @Override
     public double calcularIndicador() {
         if (frecuenciaCardiaca >= 60 && frecuenciaCardiaca <= 100) {
@@ -25,11 +35,28 @@ public class MetricaCardiaca extends Metrica implements Serializable {
         }
     }
 
+    /**
+     * Obtiene el tipo de métrica.
+     * @return
+     */
     @Override
     public String getTipo() {
         return "Frecuencia Cardíaca";
     }
 
-    public int getFrecuenciaCardiaca() { return frecuenciaCardiaca; }
-    public double getVariabilidadCardiaca() { return variabilidadCardiaca; }
+    /**
+     * Obtiene la frecuencia cardíaca registrada.
+     * @return
+     */
+    public int getFrecuenciaCardiaca() {
+        return frecuenciaCardiaca;
+    }
+
+    /**
+     * Obtiene la variabilidad de la frecuencia cardíaca.
+     * @return
+     */
+    public double getVariabilidadCardiaca() {
+        return variabilidadCardiaca;
+    }
 }

@@ -37,26 +37,39 @@ public class controladorUsuarioInvitado {
     private String emailInvitado;
     private String permisos = "0000";
 
+    /**
+     * Inicializa el controlador.
+     * Configura los eventos de los botones y carga la información inicial.
+     */
     @FXML
     public void initialize() {
+        // Configurar eventos
         menuCerrarSesion.setOnAction(event -> cerrarSesion());
-
         btnEnviarComentario.setOnAction(event -> enviarComentario());
         btnLimpiarComentario.setOnAction(event -> limpiarComentario());
 
+        // Configurar área de información
         txtInformacionUsuario.setEditable(false);
         txtInformacionUsuario.setWrapText(true);
 
+        // Cargar datos
         cargarPermisosInvitado();
         cargarInformacionUsuario();
     }
 
+    /**
+     * Establece el email del invitado y recarga sus permisos.
+     * @param email
+     */
     public void setEmailInvitado(String email) {
         this.emailInvitado = email;
         cargarPermisosInvitado();
-        cargarInformacionUsuario(); // Recargar con los permisos correctos
+        cargarInformacionUsuario();
     }
 
+    /**
+     * Carga los permisos del invitado desde el archivo de invitados.
+     */
     private void cargarPermisosInvitado() {
         if (emailInvitado == null) return;
 
@@ -81,10 +94,15 @@ public class controladorUsuarioInvitado {
         }
     }
 
+    /**
+     * Carga y muestra la información del usuario principal.
+     * La información mostrada depende de los permisos del invitado:
+     */
     private void cargarInformacionUsuario() {
         try {
             StringBuilder informacion = new StringBuilder();
 
+            // Cargar información del usuario principal
             String[] usuario = ManejadorUsuarios.leerUsuarioPrincipal();
             if (usuario != null && usuario.length >= 3) {
                 informacion.append("INFORMACIÓN DEL USUARIO PRINCIPAL\n");
@@ -105,8 +123,10 @@ public class controladorUsuarioInvitado {
 
                 informacion.append("\n");
 
+                // Obtener datos de salud de hoy
                 Map<String, String> datosHoy = LectorDatosSimulador.leerDatosPorFecha(LocalDate.now());
 
+                // Verificar permisos
                 boolean detalleFrecuencia = permisos.charAt(0) == '1';
                 boolean detalleSueno = permisos.charAt(1) == '1';
                 boolean detalleActividad = permisos.charAt(2) == '1';
@@ -115,31 +135,27 @@ public class controladorUsuarioInvitado {
                 informacion.append("DATOS DE SALUD\n");
                 informacion.append("=======================\n\n");
 
-                // INFORMACIÓN BÁSICA HOY
+                // Información básica (siempre visible)
                 informacion.append("--- Información Básica (Hoy) ---\n\n");
 
-                // Frecuencia Cardíaca Básico
                 if (datosHoy.containsKey("frecuencia")) {
                     informacion.append("• Frecuencia Cardíaca: ").append(datosHoy.get("frecuencia")).append(" BPM\n");
                 } else {
                     informacion.append("• Frecuencia Cardíaca: No disponible\n");
                 }
 
-                // Actividad Básico
                 if (datosHoy.containsKey("pasos")) {
                     informacion.append("• Pasos: ").append(datosHoy.get("pasos")).append("\n");
                 } else {
                     informacion.append("• Pasos: No disponible\n");
                 }
 
-                // Sueño Básico
                 if (datosHoy.containsKey("totalSueno")) {
                     informacion.append("• Sueño: ").append(datosHoy.get("totalSueno")).append(" horas\n");
                 } else {
                     informacion.append("• Sueño: No disponible\n");
                 }
 
-                // Oxígeno Básico
                 Map<String, String> datosOxigeno = leerUltimoOxigeno();
                 if (datosOxigeno != null && datosOxigeno.containsKey("oxigeno")) {
                     informacion.append("• Oxígeno en Sangre: ").append(datosOxigeno.get("oxigeno")).append("%\n");
@@ -147,7 +163,7 @@ public class controladorUsuarioInvitado {
                     informacion.append("• Oxígeno en Sangre: No disponible\n");
                 }
 
-                // INFORMACIÓN DETALLADA ÚLTIMOS 7 DÍAS
+                // Información detallada (solo con permisos)
                 if (detalleFrecuencia || detalleSueno || detalleActividad || detalleOxigeno) {
                     informacion.append("\n--- Información Detallada (Últimos 7 días) ---\n\n");
 
@@ -209,6 +225,7 @@ public class controladorUsuarioInvitado {
                 informacion.append("Por favor, contacte al administrador del sistema.");
             }
 
+            // Información de dispositivos
             try {
                 int cantidadDispositivos = GestorDispositivos.getInstancia().getCantidadDispositivos();
                 informacion.append("\nDISPOSITIVOS VINCULADOS\n");
@@ -228,6 +245,10 @@ public class controladorUsuarioInvitado {
         }
     }
 
+    /**
+     * Lee el último registro de oxígeno del archivo.
+     * @return
+     */
     private Map<String, String> leerUltimoOxigeno() {
         try {
             File archivo = new File("oxigeno.txt");
@@ -237,6 +258,7 @@ public class controladorUsuarioInvitado {
             String ultimaLinea = null;
             String linea;
 
+            // Leer hasta la última línea
             while ((linea = br.readLine()) != null) {
                 if (!linea.trim().isEmpty()) {
                     ultimaLinea = linea;
@@ -244,6 +266,7 @@ public class controladorUsuarioInvitado {
             }
             br.close();
 
+            // Procesar la última línea
             if (ultimaLinea != null) {
                 String[] partes = ultimaLinea.split(",");
                 if (partes.length >= 2) {
@@ -261,6 +284,11 @@ public class controladorUsuarioInvitado {
         return null;
     }
 
+    /**
+     * Convierte el código de estado a texto legible.
+     * @param estado
+     * @return
+     */
     private String convertirEstado(String estado) {
         switch (estado.toUpperCase()) {
             case "NORMAL": return "Normal";
@@ -277,6 +305,11 @@ public class controladorUsuarioInvitado {
         }
     }
 
+    /**
+     * Convierte el código de nivel de actividad a texto legible.
+     * @param nivel
+     * @return
+     */
     private String convertirNivel(String nivel) {
         switch (nivel.toUpperCase()) {
             case "SEDENTARIO": return "Sedentario";
@@ -288,6 +321,10 @@ public class controladorUsuarioInvitado {
         }
     }
 
+    /**
+     * Envía el comentario escrito por el invitado.
+     * Guarda el comentario en el archivo comentarios.txt
+     */
     private void enviarComentario() {
         String comentario = txtComentario.getText().trim();
 
@@ -297,6 +334,7 @@ public class controladorUsuarioInvitado {
         }
 
         try {
+            // Obtener el nombre del invitado
             String nombreInvitado = "";
             List<String[]> invitados = ManejadorUsuarios.leerInvitados();
             for (String[] invitado : invitados) {
@@ -316,6 +354,11 @@ public class controladorUsuarioInvitado {
         }
     }
 
+    /**
+     * Guarda un comentario en el archivo comentarios.txt
+     * @param nombreInvitado
+     * @param comentario
+     */
     private void guardarComentario(String nombreInvitado, String comentario) throws IOException {
         File archivo = new File("comentarios.txt");
 
@@ -326,17 +369,30 @@ public class controladorUsuarioInvitado {
         System.out.println("Comentario guardado: " + nombreInvitado + " - " + comentario);
     }
 
+    /**
+     * Limpia el campo de comentario y oculta el mensaje de estado.
+     */
     private void limpiarComentario() {
         txtComentario.clear();
         lblMensajeEstado.setVisible(false);
     }
 
+    /**
+     * Muestra un mensaje de estado al usuario.
+     * @param mensaje
+     * @param exito
+     */
     private void mostrarMensaje(String mensaje, boolean exito) {
         lblMensajeEstado.setText(mensaje);
         lblMensajeEstado.setStyle(exito ? "-fx-text-fill: #4CAF50;" : "-fx-text-fill: #F44336;");
         lblMensajeEstado.setVisible(true);
     }
 
+    /**
+     * Navega a otra ventana del sistema.
+     * @param nombreArchivo Nombre del archivo FXML
+     * @param titulo Título de la ventana
+     */
     private void irAVentana(String nombreArchivo, String titulo) {
         try {
             String userDir = System.getProperty("user.dir");
@@ -353,6 +409,9 @@ public class controladorUsuarioInvitado {
         }
     }
 
+    /**
+     * Cierra la sesión del invitado y regresa al login.
+     */
     private void cerrarSesion() {
         try {
             String userDir = System.getProperty("user.dir");

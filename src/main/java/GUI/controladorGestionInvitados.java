@@ -59,6 +59,9 @@ public class controladorGestionInvitados {
     private Map<String, String[]> datosInvitados; // email -> [nombre, fecha, permisos]
     private String invitadoSeleccionado;
 
+    /**
+     * Metodo que se ejecuta automáticamente al cargar menú de la gestión de invitados en el FXML
+     */
     @FXML
     public void initialize() {
         menuDashboard.setOnAction(event -> irAVentana("Dashboard.fxml", "Dashboard"));
@@ -80,6 +83,9 @@ public class controladorGestionInvitados {
         configurarListeners();
     }
 
+    /**
+     * Metodo que se encarga de cargar los invitados que se han registrado para su visualización.
+     */
     private void cargarInvitados() {
         try {
             List<String[]> invitados = ManejadorUsuarios.leerInvitados();
@@ -128,6 +134,10 @@ public class controladorGestionInvitados {
         }
     }
 
+    /**
+     * Metodo que se encarga de cargar y mostrar los permisos del invitado seleccionado.
+     * @param email
+     */
     private void cargarPermisosInvitado(String email) {
         if (datosInvitados.containsKey(email)) {
             String[] datos = datosInvitados.get(email);
@@ -154,6 +164,9 @@ public class controladorGestionInvitados {
         }
     }
 
+    /**
+     *
+     */
     private void configurarListeners() {
         listInvitados.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
@@ -171,6 +184,11 @@ public class controladorGestionInvitados {
         });
     }
 
+    /**
+     * Metodo que se encarga de extraer el email del invitado que ha sido seleccionado.
+     * @param item
+     * @return
+     */
     private String extraerEmailDeItem(String item) {
         // El formato es: "Nombre - email (Desde: fecha)"
         int start = item.indexOf("-") + 2;
@@ -181,6 +199,9 @@ public class controladorGestionInvitados {
         return null;
     }
 
+    /**
+     * Metodo que se encarga de modificar los permisos que contiene un invitado.
+     */
     private void modificarPermisos() {
         if (invitadoSeleccionado == null) {
             mostrarAlerta("Advertencia", "Por favor selecciona un invitado primero");
@@ -209,6 +230,10 @@ public class controladorGestionInvitados {
         }
     }
 
+    /**
+     * Metodo que se encarga de guardar los datos de los invitados en un archivo.
+     * @throws IOException
+     */
     private void guardarInvitadosEnArchivo() throws IOException {
         File archivo = new File("usuarios_invitados.txt");
         try (PrintWriter writer = new PrintWriter(new FileWriter(archivo))) {
@@ -221,6 +246,9 @@ public class controladorGestionInvitados {
         }
     }
 
+    /**
+     * Metodo que se encarga de revocar el acceso de el invitado seleccionado y por lo tanto eliminarlo.
+     */
     private void revocarAcceso() {
         if (invitadoSeleccionado == null) {
             mostrarAlerta("Advertencia", "Por favor selecciona un invitado primero");
@@ -261,12 +289,21 @@ public class controladorGestionInvitados {
         }
     }
 
+    /**
+     * Metodo que se encarga de actualizar el mensaje de los invitados que fueron cargados.
+     * @param cantidad
+     */
     private void actualizarTituloSeccion(int cantidad) {
         // Buscar y actualizar el título de la sección
         // Podrías agregar un fx:id al Text en el FXML para esto
         System.out.println("Invitados cargados: " + cantidad);
     }
 
+    /**
+     * Metodo que se encarga de preparar y mostrar una alerta depiendo de la acción realizada.
+     * @param titulo
+     * @param mensaje
+     */
     private void mostrarAlerta(String titulo, String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(titulo);
@@ -275,6 +312,11 @@ public class controladorGestionInvitados {
         alert.showAndWait();
     }
 
+    /**
+     * Metodo que se encarga de pasar al siguiente menú dependiendo de cual se seleccione en el MenuButton.
+     * @param nombreArchivo
+     * @param titulo
+     */
     private void irAVentana(String nombreArchivo, String titulo) {
         try {
             String userDir = System.getProperty("user.dir");
@@ -300,6 +342,9 @@ public class controladorGestionInvitados {
         }
     }
 
+    /**
+     * Metodo que se encarga de volver al menú de login para volver a iniciar sesión.
+     */
     private void cerrarSesion() {
         try {
             String userDir = System.getProperty("user.dir");

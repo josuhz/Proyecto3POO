@@ -38,6 +38,9 @@ public class controladorDispositivos {
     private GestorDispositivos gestor = GestorDispositivos.getInstancia();
 
 
+    /**
+     * Metodo que se ejecuta automáticamente al cargar menú de dispositivos en el FXML
+     */
     @FXML
     public void initialize() {
         menuDashboard.setOnAction(event -> irAVentana("Dashboard.fxml", "Dashboard"));
@@ -56,6 +59,10 @@ public class controladorDispositivos {
         actualizarInterfaz();
     }
 
+    /**
+     * Metodo que se encarga de agregar un nuevo dispositivo SmartWatch.
+     * Cada dispositivo agregado de este tipo es diferente.
+     */
     private void agregarSmartWatch() {
         String id = "SW-" + String.format("%04d", gestor.getContadorSmartWatch());
         SmartWatch smartwatch = new SmartWatch(id, "Apple Watch Series " + (7 + new Random().nextInt(3)), "Apple");
@@ -75,6 +82,10 @@ public class controladorDispositivos {
                 "   • Sueño\n");
     }
 
+    /**
+     * Metodo que se encarga de agregar un nuevo dispositivo Pulsera.
+     * Cada dispositivo agregado de este tipo es diferente.
+     */
     private void agregarPulsera() {
         String id = "PL-" + String.format("%04d", gestor.getContadorPulsera());
         String[] marcas = {"Fitbit", "Xiaomi", "Samsung", "Garmin"};
@@ -93,6 +104,10 @@ public class controladorDispositivos {
                 "   • Frecuencia cardíaca\n");
     }
 
+    /**
+     * Metodo que se encarga de agregar un nuevo dispositivo Oximetro.
+     * Cada dispositivo agregado de este tipo es diferente.
+     */
     private void agregarOximetro() {
         String id = "OX-" + String.format("%04d", gestor.getContadorOximetro());
         OximetroPulso oximetro = new OximetroPulso(id, "Oxímetro de Pulso", "Wellue");
@@ -110,6 +125,9 @@ public class controladorDispositivos {
                 "   • Oxígeno\n");
     }
 
+    /**
+     * Metodo que se encarga de eliminar el dispositivo que se seleccionó.
+     */
     private void eliminarDispositivoSeleccionado() {
         String seleccion = chbDispositivos.getValue();
 
@@ -141,6 +159,11 @@ public class controladorDispositivos {
         }
     }
 
+    /**
+     * Metodo que se encarga de extraer el ID del dispositivo que ha sido selecionado.
+     * @param seleccion
+     * @return
+     */
     private String extraerIdDeSeleccion(String seleccion) {
         int inicioId = seleccion.lastIndexOf("(");
         int finId = seleccion.lastIndexOf(")");
@@ -152,6 +175,11 @@ public class controladorDispositivos {
         return "";
     }
 
+    /**
+     * Metedo que se encarga de verificar la cantidad de dispositivos de cada tipo,
+     * en caso de no haber elimina la información que podría contener de los reportes.
+     * @param tipoDispositivo
+     */
     private void verificarYEliminarArchivos(String tipoDispositivo) {
         int smartwatches = 0;
         int pulseras = 0;
@@ -190,10 +218,16 @@ public class controladorDispositivos {
         }
     }
 
+    /**
+     * Metodo que se encarga de limpiar el TextArea en donde se muestran los dispositivos
+     */
     private void limpiarPantalla() {
         areaDispositivos.clear();
     }
 
+    /**
+     * Metodo que se encarga de mostrar los dispositivos que contiene el usuario.
+     */
     private void mostrarDispositivos() {
         if (gestor.getCantidadDispositivos() == 0) {
             areaDispositivos.setText("No hay dispositivos vinculados.\n\n" +
@@ -211,6 +245,10 @@ public class controladorDispositivos {
         areaDispositivos.setText(lista.toString());
     }
 
+    /**
+     * Metodo que se encarga de actualizar la cantidad de dispositivos y
+     * y de actualizar la interfaz según los dispositivos nuevos.
+     */
     private void actualizarInterfaz() {
         txtTituloDispositivos.setText("Dispositivos Vinculados (" + gestor.getCantidadDispositivos() + ")");
 
@@ -224,6 +262,9 @@ public class controladorDispositivos {
         }
     }
 
+    /**
+     * Metodo que se encarga de actualizar el choicebox para la selección de los dispositivos.
+     */
     private void actualizarChoiceBox() {
         chbDispositivos.getItems().clear();
 
@@ -239,6 +280,11 @@ public class controladorDispositivos {
         }
     }
 
+    /**
+     * Metodo que se encarga de pasar al siguiente menú dependiendo de cual se seleccione en el MenuButton.
+     * @param nombreArchivo
+     * @param titulo
+     */
     private void irAVentana(String nombreArchivo, String titulo) {
         try {
             String userDir = System.getProperty("user.dir");
@@ -255,6 +301,9 @@ public class controladorDispositivos {
         }
     }
 
+    /**
+     * Metodo que se encarga de volver al menú de login para volver a iniciar sesión.
+     */
     private void cerrarSesion() {
         try {
             String userDir = System.getProperty("user.dir");

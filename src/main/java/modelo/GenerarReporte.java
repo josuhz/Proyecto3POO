@@ -12,8 +12,11 @@ public class GenerarReporte {
     private static final DateTimeFormatter displayFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final DateTimeFormatter nombreArchivoFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 
+    /**
+     * Genera un reporte completo de salud y lo muestra automáticamente.
+     * El reporte incluye datos de frecuencia cardíaca, oxígeno, sueño y actividad física.
+     */
     public static void generarYMostrarReporte() {
-        // Nombre del archivo solo con fecha (sin hora)
         String nombreArchivo = "reporte_salud_" + LocalDate.now().format(nombreArchivoFormatter) + ".txt";
 
         try (PrintWriter writer = new PrintWriter(new FileWriter(nombreArchivo))) {
@@ -24,7 +27,7 @@ public class GenerarReporte {
             writer.println("Fecha de generación: " + LocalDate.now().format(displayFormatter));
             writer.println();
 
-            // Obtener todas las fechas disponibles de todos los archivos
+            // Obtener todas las fechas disponibles
             Set<LocalDate> todasLasFechas = obtenerTodasLasFechas();
 
             if (todasLasFechas.isEmpty()) {
@@ -59,10 +62,14 @@ public class GenerarReporte {
         }
     }
 
+    /**
+     * Obtiene todas las fechas únicas que tienen datos registrados.
+     * Busca fechas en los archivos de frecuencia cardíaca, oxígeno, sueño y actividad física.
+     * @return
+     */
     private static Set<LocalDate> obtenerTodasLasFechas() {
         Set<LocalDate> fechas = new HashSet<>();
 
-        // Archivos posibles
         String[] archivos = {
                 "frecuencia_cardiaca.txt",
                 "oxigeno.txt",
@@ -79,6 +86,12 @@ public class GenerarReporte {
         return fechas;
     }
 
+    /**
+     * Extrae todas las fechas de un archivo específico.
+     * Lee la primera columna de cada línea que contiene la fecha.
+     * @param nombreArchivo
+     * @return
+     */
     private static Set<LocalDate> obtenerFechasDeArchivo(String nombreArchivo) {
         Set<LocalDate> fechas = new HashSet<>();
 
@@ -104,6 +117,12 @@ public class GenerarReporte {
         return fechas;
     }
 
+    /**
+     * Genera el reporte de salud para una fecha específica.
+     * Incluye datos de frecuencia cardíaca, oxígeno, sueño y actividad física.
+     * @param fecha
+     * @param writer
+     */
     private static void generarReportePorFecha(LocalDate fecha, PrintWriter writer) {
         String fechaStr = fecha.format(fechaFormatter);
         String fechaDisplay = fecha.format(displayFormatter);
@@ -163,6 +182,11 @@ public class GenerarReporte {
         writer.println();
     }
 
+    /**
+     * Genera un resumen estadístico general de todos los datos.
+     * Calcula porcentajes de alertas, días con sueño deficiente y niveles de actividad.
+     * @param writer
+     */
     private static void generarResumenGeneral(PrintWriter writer) {
         // Contadores para estadísticas
         int totalDias = 0;
@@ -171,7 +195,6 @@ public class GenerarReporte {
         int diasActivos = 0;
         int diasSedentarios = 0;
 
-        // Archivos necesarios
         boolean tieneFC = Files.exists(Paths.get("frecuencia_cardiaca.txt"));
         boolean tieneSueno = Files.exists(Paths.get("sueño.txt"));
         boolean tieneActividad = Files.exists(Paths.get("actividad_fisica.txt"));
@@ -262,7 +285,11 @@ public class GenerarReporte {
         }
     }
 
-    // Métodos de lectura de archivos
+    /**
+     * Lee los datos de frecuencia cardíaca de una fecha específica.
+     * @param fecha
+     * @return
+     */
     private static Map<String, String> leerFrecuenciaCardiaca(String fecha) {
         Map<String, String> datos = new HashMap<>();
         try (BufferedReader reader = new BufferedReader(new FileReader("frecuencia_cardiaca.txt"))) {
@@ -281,6 +308,11 @@ public class GenerarReporte {
         return datos;
     }
 
+    /**
+     * Lee los datos de oxígeno en sangre de una fecha específica.
+     * @param fecha
+     * @return
+     */
     private static Map<String, String> leerOxigeno(String fecha) {
         Map<String, String> datos = new HashMap<>();
         try (BufferedReader reader = new BufferedReader(new FileReader("oxigeno.txt"))) {
@@ -299,6 +331,11 @@ public class GenerarReporte {
         return datos;
     }
 
+    /**
+     * Lee los datos de sueño de una fecha específica.
+     * @param fecha
+     * @return
+     */
     private static Map<String, String> leerSueno(String fecha) {
         Map<String, String> datos = new HashMap<>();
         try (BufferedReader reader = new BufferedReader(new FileReader("sueño.txt"))) {
@@ -320,6 +357,11 @@ public class GenerarReporte {
         return datos;
     }
 
+    /**
+     * Lee los datos de actividad física de una fecha específica.
+     * @param fecha
+     * @return
+     */
     private static Map<String, String> leerActividadFisica(String fecha) {
         Map<String, String> datos = new HashMap<>();
         try (BufferedReader reader = new BufferedReader(new FileReader("actividad_fisica.txt"))) {
@@ -339,7 +381,11 @@ public class GenerarReporte {
         return datos;
     }
 
-    // Métodos de conversión
+    /**
+     * Convierte el código de estado de frecuencia cardíaca a texto legible.
+     * @param estadoFC
+     * @return
+     */
     private static String convertirEstadoFC(String estadoFC) {
         switch (estadoFC) {
             case "ALERTA_BAJA": return "Alerta Baja";
@@ -350,6 +396,11 @@ public class GenerarReporte {
         }
     }
 
+    /**
+     * Convierte el código de estado de oxígeno a texto legible.
+     * @param estadoOxigeno
+     * @return
+     */
     private static String convertirEstadoOxigeno(String estadoOxigeno) {
         switch (estadoOxigeno) {
             case "NORMAL": return "Normal";
@@ -359,6 +410,11 @@ public class GenerarReporte {
         }
     }
 
+    /**
+     * Convierte el código de estado de sueño a texto legible.
+     * @param estadoSueno
+     * @return
+     */
     private static String convertirEstadoSueno(String estadoSueno) {
         switch (estadoSueno) {
             case "DEFICIENTE": return "Deficiente";
@@ -369,6 +425,11 @@ public class GenerarReporte {
         }
     }
 
+    /**
+     * Convierte el código de nivel de actividad a texto legible.
+     * @param nivelActividad
+     * @return
+     */
     private static String convertirNivelActividad(String nivelActividad) {
         switch (nivelActividad) {
             case "SEDENTARIO": return "Sedentario";
@@ -380,7 +441,10 @@ public class GenerarReporte {
         }
     }
 
-    // Método para abrir el archivo en el bloc de notas
+    /**
+     * Abre el archivo de reporte en el editor de texto del sistema operativo.
+     * @param nombreArchivo
+     */
     private static void abrirEnBlocDeNotas(String nombreArchivo) {
         try {
             String os = System.getProperty("os.name").toLowerCase();
